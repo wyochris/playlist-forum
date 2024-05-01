@@ -10,3 +10,21 @@ body {
 .page-container {
     margin-top: 75px;
 }
+
+#roselogo {
+    margin: 20px auto;
+    display: block;
+    max-width: 350px;
+}
+
+#rosefireButton {
+    display: block;
+    margin: 60px auto;
+    color: white;
+    background: #800000;
+    font-size: 1.1em;
+    padding: 10px 30px;
+    border-radius: 5px;
+}
+
+
