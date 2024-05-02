@@ -11,11 +11,36 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-dark fixed-top">
-    <a class="navbar-brand" href="#">App Name</a>
+  <nav class="navbar bg-body-tertiary navbar-dark fixed-top">
+    <div class="container-fluid">
+      <form class="d-flex" role="search">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+      <button class="navbar-toggler" type="button" id="playlists">
+        <i class="material-icons">settings</i>
+      </button>
+    </div>
   </nav>
-  <div id="mainPage" class="container page-container">
 
+  <nav class="bottom-navbar navbar navbar-dark fixed-bottom">
+    <div class="container text-center">
+      <div class="row">
+        <div id="playlists" class="col-4" style="background-color: green;">
+          <i class="material-icons">menu</i>
+        </div>
+        <div id="songs" class="col-4" style="background-color: black;">
+          <i class="material-icons">menu</i>
+        </div>
+        <div id="details" class="col-4" style="background-color: green;">
+          <i class="material-icons">menu</i>
+        </div>
+      </div>
+    </div>    
+  </nav>
+
+  <div id="mainPage" class="container page-container">
+    <h1 class="text-center text-light">Playlist Forum</h1>
     <div id="loginPage" class="container page-container">
       <img id="roselogo" src="/images/rose_logo.png" alt="Rose Logo">
       <button id="rosefireButton" type="button" class="btn">Sign in with Rosefire</button>

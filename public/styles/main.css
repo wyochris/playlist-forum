@@ -7,8 +7,13 @@ body {
     color: white;
 }
 
+.navbar>.container{
+    display: block;
+}
+
 .page-container {
     margin-top: 75px;
+    background-color: black;
 }
 
 #roselogo {
