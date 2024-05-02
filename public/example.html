@@ -10,40 +10,55 @@
     <title>App Name</title>
 </head>
 
+<!-- image link: https://www.rose-hulman.edu/about-us/community-and-public-services/communications-and-marketing/assets/RH_G_HiRes-RGB-1c.png -->
+
 <body>
-    <nav class="navbar navbar-dark fixed-top">
-        <a class="navbar-brand" href="#">App Name</a>
-    </nav>
+    <nav class="navbar bg-body-tertiary navbar-dark fixed-top">
+        <div class="container-fluid">
+          <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+          <button class="navbar-toggler" type="button" id="playlists">
+            <i class="material-icons">settings</i>
+          </button>
+        </div>
+      </nav>
 
     <div id="mainPage" class="container page-container">
         <div class="nav-bar">
             <div class="logo">
             </div>
             <div class="categories-nav">
-                <div class="category-item category-item-selected">
-                    <div class="icon"></div>
-                    <span>Home</span>
+                <div>
+                    <button class="category-item category-item-selected" type="button"> Home</button>
                 </div>
-                <div class="category-item">
+                <div>
+                    <button class=”button-solid category-item”>Other</button>
                     <div class="icon"></div>
-                    <span>Search</span>
+
                 </div>
-                <div class="category-item">
+                <div>
+                    <button class=”button-solid category-item”>Your Library</button>
+
                     <div class="icon">
                     </div>
-                    <span>Your Library</span>
+
                 </div>
             </div>
             <div class="playlists-nav">
-                <div class="category-item">
+                <div>
+                    <button class=”button-solid category-item”>Create Playlist</button>
+
                     <div class="icon">
                     </div>
-                    <span>Create Playlist</span>
+
                 </div>
-                <div class="category-item">
+                <div>
+                    <button class=”button-solid category-item”>Liked Songs</button>
                     <div class="icon">
                     </div>
-                    <span>Liked Songs</span>
+
                 </div>
             </div>
             <div class="divider-container">

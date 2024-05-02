@@ -8,6 +8,7 @@ rhit.main = function () {
 	document.getElementById("playlistsButton").onclick = (event) => {
 		window.location.href = `/index.html`;
 	};
+
 };
 
 rhit.main();
