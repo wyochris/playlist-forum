@@ -1,25 +1,52 @@
 body {
-    background: #DDDDDD;
+  background: #DDDDDD;
 }
 
 .navbar {
-    background-color: #800000;
-    color: white;
+  background-color: #800000;
+  color: white;
+}
+
+.page-container {
+  margin-top: 75px;
 }
 
 .navbar>.container{
     display: block;
 }
 
-.page-container {
-    margin-top: 75px;
-    background-color: black;
+html, body{
+  margin: 0;
+  height: 100%;
+}
+
+.bmd-layout-content {
+  background-color: darkgrey;
+  color: white ;
+}
+
+.dropdown-toggle {
+  color: black;
+}
+
+.comment-button { 
+  padding: 0px 2px;
+}
+
+.profile-picture {
+  max-width: 50px;
+  max-height: 50px;
 }
 
 #roselogo {
     margin: 20px auto;
     display: block;
     max-width: 350px;
+}
+
+.card-body{
+  background-color: white;
+  color: #000;
 }
 
 #rosefireButton {

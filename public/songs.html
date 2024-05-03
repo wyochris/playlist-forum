@@ -7,23 +7,86 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
   <link rel="stylesheet" href="styles/bootstrap-material-design.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" href="styles/main.css">
   <title>Playlist Forum</title>
 </head>
 
 <body>
-  <nav class="navbar bg-body-tertiary navbar-dark fixed-top">
-    <div class="container-fluid">
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
-      <button class="navbar-toggler" type="button" id="playlists">
-        <i class="material-icons">settings</i>
-      </button>
+  <div class="bmd-layout-container bmd-drawer-f-r bmd-drawer-overlay">
+    <header class="bmd-layout-header">
+      <nav class="navbar navbar-dark fixed-top">
+        <div class="container-fluid">
+          <div class="dropdown">
+            <button class="btn btn-tertiary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="material-icons">settings</i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-left">
+              <li><a class="dropdown-item" href="#">Create Playlist</a></li>
+              <li><a class="dropdown-item" href="#">Liked Songs</a></li>
+              <br>
+              <li><a class="dropdown-item" href="#">Logout</a></li>
+            </ul>
+          </div>
+          <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </div>
+      </nav>
+    </header>
+    
+    <main class="bmd-layout-content">
+      <div id="songsPage" class="container page-container">
+        <h1 class="text-center text-light">Playlist 1</h1>
+        <div id="playlists" class="container page-container">
+          <div class="card">
+            <div class="card-body">
+              <image src="https://i.scdn.co/image/ab67616d0000485102d63d77b84d4927a80d5252">&nbsp; Song Title</image>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <image src="https://i.scdn.co/image/ab67616d0000485102d63d77b84d4927a80d5252">&nbsp; Song Title</image>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <image src="https://i.scdn.co/image/ab67616d0000485102d63d77b84d4927a80d5252">&nbsp; Song Title</image>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      <div class="row">
+      <button class="btn btn-primary mx-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom">Comments</button>
+      </div>
+    </main>
+    
+    
+    
+    <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasBottomLabel">Comment Section</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body small">
+        <div class="card">
+          <div class="card-body">
+            <image class="profile-picture" src="https://yt3.ggpht.com/a/default-user=s88-c-k-c0x00ffffff-no-rj"></image>
+            
+              <h5 id="author">Anonymous user | 10 hours ago</h5>
+              <h4 id="content">Really like the song</h4 >
+            
+          </div>
+        </div>
+      </div>
     </div>
-  </nav>
-
+    
+  </div>
+  
   <nav class="bottom-navbar navbar navbar-dark fixed-bottom">
     <div class="container text-center">
       <div class="row">
@@ -39,21 +102,8 @@
       </div>
     </div>    
   </nav>
-
-  <div id="songsPage" class="container page-container">
-    <h1 class="text-center text-light">My Songs</h1>
-    <div id="playlists" class="container page-container">
-      <div class="card">
-        <div class="card-body">
-          <image src="https://i.scdn.co/image/ab67616d0000485102d63d77b84d4927a80d5252">&nbsp; Playlist 1
-            
-          </image>
-          
-        </div>
-      </div>
-    </div>
-
-  </div>
+  
+  
   <script src="scripts/jquery.min.js"></script>
   <script src="scripts/popper.js"></script>
   <script src="scripts/bootstrap-material-design.js"></script>
