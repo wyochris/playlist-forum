@@ -1,9 +1,12 @@
 {
   "dependencies": {
-    "crypto": "^1.0.1",
+    "blurhash": "^2.0.5",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "querystring": "^0.2.1",
+    "firebase-functions": "^5.0.1",
+    "jquery": "^3.7.1",
     "spotify-web-api-node": "^5.0.2"
   },
   "name": "csse-280-spring-2023-2024-final-project-repo-t4-lardner-zhang",

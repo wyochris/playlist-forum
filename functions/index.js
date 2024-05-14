@@ -5,8 +5,11 @@ const SpotifyWebApi = require("spotify-web-api-node");
 
 const express = require('express');
 var app = express();
-const crypto = require('crypto');
-const querystring = require('querystring');
+const functions = require('firebase-functions');
+const cors = require('cors');
+
+app.use(cors({ origin: true }));
+
 
 const scopes = [
   'ugc-image-upload',
@@ -38,6 +41,11 @@ const spotifyApi = new SpotifyWebApi({
   clientSecret: process.env.CLIENT_SECRET,
   redirectUri: process.env.REDIRECT_URL
 });
+
+// the routes go here:
+app.get('/', (req, res, next) => {
+  res.render('index')
+})
 
 app.get('/login', (req, res) => {
   res.redirect(spotifyApi.createAuthorizeURL(scopes));
@@ -88,7 +96,6 @@ app.get('/callback', (req, res) => {
     .then(function(data) {
       console.log(data.body.tracks.total + ' tracks');
   
-      // Go through the first page of results
       var firstPage = data.body.tracks.items;
       console.log('The first page are (popularity in parentheses):');
 
@@ -101,5 +108,7 @@ app.get('/callback', (req, res) => {
     });
 });
 
-console.log('Listening on 8888');
-app.listen(8888);
+console.log("backend ready");
+
+
+exports.api = functions.https.onRequest(app);
