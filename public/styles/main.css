@@ -25,6 +25,14 @@ html, body{
   color: white ;
 }
 
+#CommentSection {
+  --bs-offcanvas-height: 50vh;
+}
+
+span.bmd-form-group {
+  padding: 0;
+}
+
 .dropdown-toggle {
   color: black;
 }
