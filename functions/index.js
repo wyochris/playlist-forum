@@ -92,12 +92,12 @@ app.get('/callback', (req, res) => {
 });
 
 // get search data
-app.get('/search', async (req, res) => {
+app.get('/search/:query', async (req, res) => {
   try {
-    const query = req.query.query;
-    const data = await spotifyApi.searchTracks(query, { limit: 10 });
-    const tracks = data.body.tracks.items;
-    res.json(tracks); // Send the search results to the frontend
+    const queryString = req.params.query;
+    const data = await spotifyApi.searchTracks(queryString);
+    const trackItems = data.body.tracks.items;
+    res.json(trackItems); // Send the search results to the frontend
   } catch (error) {
     console.error('Error searching tracks:', error);
     res.status(500).json({ error: 'Failed to search tracks' });
