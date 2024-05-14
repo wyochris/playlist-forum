@@ -1,8 +1,8 @@
 const apiURL = "https://lardner-zhang-final-csse280.web.app/api/"
 
-rhit.FB_COLLECTION_PLAYLIST = "Playlists";
-rhit.FB_KEY_PLAYLISTNAME = "playlistName";
-rhit.FB_KEY_AUTHOR = "author";
+FB_COLLECTION_PLAYLIST = "Playlists";
+FB_KEY_PLAYLISTNAME = "playlistName";
+FB_KEY_AUTHOR = "author";
 
 function htmlToElement(html) {
 	var template = document.createElement('template');
@@ -11,21 +11,21 @@ function htmlToElement(html) {
 	return template.content.firstChild;
 }
 
-rhit.Playlist = class {
+Playlist = class {
 	constructor(id, name) {
 		this.id = id;
 		this.name = name;
 	}
 }
 
-rhit.Song = class {
+Song = class {
 	constructor(id, name) {
 		this.id = id;
 		this.name = name;		
 	}
 }
 
-rhit.Comment = class {
+Comment = class {
 	constructor(user, time, content) {
 		this.user = user;
 		this.time = time;
@@ -33,24 +33,24 @@ rhit.Comment = class {
 	}
 }
 
-rhit.PlaylistPageController = class {
+PlaylistPageController = class {
 	constructor() {
 		document.getElementById("playlistsButton").onclick = (event) => {
 			window.location.href = `/index.html`;
 		};
 
 		document.querySelector("#myQuotes").onclick = (event) => {
-			//window.location.href = `/list.html?uid=${rhit.fbAuthManager.uid}`;
+			//window.location.href = `/list.html?uid=${fbAuthManager.uid}`;
 		};
 
 		document.querySelector("#logout").onclick = (event) => {
-			rhit.fbAuthManager.signOut();
+			fbAuthManager.signOut();
 		};
 
 		document.querySelector("#submit").onclick = (event) => {
 			const playlistName = document.querySelector("#playlistName").value;
 			console.log(playlistName);
-			rhit.fbMovieQuotesManager.add(playlistName);
+			fbMovieQuotesManager.add(playlistName);
 		};
 
 		$("#addPlaylist").on("show.bs.modal", (event) => {
@@ -60,7 +60,7 @@ rhit.PlaylistPageController = class {
 			document.getElementById("playlistName").focus();
 		});
 
-		rhit.PlaylistManager.beginListening(this.updateList.bind(this));
+		PlaylistManager.beginListening(this.updateList.bind(this));
 	}
 
 	_createCard(playlistName) {
@@ -74,8 +74,8 @@ rhit.PlaylistPageController = class {
 
 	updateList() {
 		const newList = htmlToElement('<div id="listContainer" class="container page-container"></div>');
-		for (let i = 0; i < rhit.PlaylistManager.length; i++) {
-			const pl = rhit.PlaylistManager.getPlaylistAtIndex(i);
+		for (let i = 0; i < PlaylistManager.length; i++) {
+			const pl = PlaylistManager.getPlaylistAtIndex(i);
 			const newCard = this._createCard(pl);
 			newCard.onclick = (event) => {
 				window.location.href = `/details.html?id=${pl.id}`;
@@ -90,18 +90,18 @@ rhit.PlaylistPageController = class {
 	}
 }
 
-rhit.PlaylistManager = class {
+PlaylistManager = class {
 	constructor(uid) {
 		this._uid = uid;
 		this._documentSnapshots = [];
-		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_MOVIEQUOTE);
+		this._ref = firebase.firestore().collection(FB_COLLECTION_MOVIEQUOTE);
 		this._unsubscribe = null;
  		}
 
 	add(playlistName) {
 		this._ref.add({
-			[rhit.FB_KEY_AUTHOR]: rhit.fbAuthManager.uid,
-			[rhit.FB_KEY_PLAYLISTNAME]: playlistName,
+			[FB_KEY_AUTHOR]: fbAuthManager.uid,
+			[FB_KEY_PLAYLISTNAME]: playlistName,
 		})
 	}
 
@@ -110,7 +110,7 @@ rhit.PlaylistManager = class {
 		.limit(50);
 
 		if(this._uid){
-			query = query.where(rhit.FB_KEY_AUTHOR, "==", this._uid);
+			query = query.where(FB_KEY_AUTHOR, "==", this._uid);
 		}
 
 		this._unsubscribe = query.onSnapshot((querySnapshot) => {
@@ -129,9 +129,9 @@ rhit.PlaylistManager = class {
 
 	getPlaylistAtIndex(index) {
 		const snap = this._documentSnapshots[index];
-		const pl = new rhit.Playlist(
+		const pl = new Playlist(
 			snap.id,
-			snap.get(rhit.FB_KEY_PLAYLISTNAME),
+			snap.get(FB_KEY_PLAYLISTNAME),
 		);
 		return pl;
 	}
@@ -153,9 +153,10 @@ main = function () {
 };
 
 // Function to fetch Spotify data and update song cards
-async function updateSongCards(searchQuery) {
+function updateSongCards(searchQuery) {
+	console.log('querying api');
 	fetch(`http://localhost:5001/lardner-zhang-final-csse280/us-central1/api/search/${searchQuery}`)
-	//   .then(response => response.json())
+	  .then(response => response.json())
 	  .then(data => {
 		const searchResultsContainer = document.getElementById('searchResults');
 		searchResultsContainer.innerHTML = ''; // Clear previous content
@@ -191,10 +192,9 @@ async function updateSongCards(searchQuery) {
   }
   
   // when search button clicked
- async function handleSearch() {
+function handleSearch() {
 	const searchQuery = document.getElementById('searchInput').value;
-	await updateSongCards(searchQuery);
-	window.location.href = `/results.html?query=${encodeURIComponent(searchQuery)}`;
+	window.location.href = `http://localhost:5000//results.html?query=${encodeURIComponent(searchQuery)}`;
   }
   
 
