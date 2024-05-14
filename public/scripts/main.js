@@ -1,8 +1,7 @@
-var rhit = rhit || {};
 const apiURL = "https://lardner-zhang-final-csse280.web.app/api/"
 
 
-rhit.main = function () {
+main = function () {
 	console.log("Ready");
 	document.getElementById("songsButton").onclick = (event) => {
 		window.location.href = `/songs.html`;
@@ -50,4 +49,4 @@ function updateSongCards(searchQuery) {
   }
   
 
-rhit.main();
+main();
