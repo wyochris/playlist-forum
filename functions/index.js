@@ -42,14 +42,11 @@ const spotifyApi = new SpotifyWebApi({
   redirectUri: process.env.REDIRECT_URL
 });
 
-// the routes go here:
-app.get('/', (req, res, next) => {
-  res.render('index')
-})
-
 app.get('/login', (req, res) => {
   res.redirect(spotifyApi.createAuthorizeURL(scopes));
 });
+
+
 
 app.get('/callback', (req, res) => {
   const error = req.query.error;
@@ -88,24 +85,23 @@ app.get('/callback', (req, res) => {
         console.log('access_token:', access_token);
         spotifyApi.setAccessToken(access_token);
       }, expires_in / 2 * 1000);
-
-      // TODO: Link up with Client Side
-      return spotifyApi.searchTracks('Love');
-
-    })
-    .then(function(data) {
-      console.log(data.body.tracks.total + ' tracks');
-  
-      var firstPage = data.body.tracks.items;
-      console.log('The first page are (popularity in parentheses):');
-
-      firstPage.forEach(function(track, index) {
-        console.log(index + ': ' + track.name + ' (' + track.artists[0].name + ')');
-      });
     }).catch(error => {
       console.error('Error:', error);
       res.send(`Error: ${error}`);
     });
+});
+
+// get search data
+app.get('/search', async (req, res) => {
+  try {
+    const query = req.query.query;
+    const data = await spotifyApi.searchTracks(query, { limit: 10 });
+    const tracks = data.body.tracks.items;
+    res.json(tracks); // Send the search results to the frontend
+  } catch (error) {
+    console.error('Error searching tracks:', error);
+    res.status(500).json({ error: 'Failed to search tracks' });
+  }
 });
 
 console.log("backend ready");
