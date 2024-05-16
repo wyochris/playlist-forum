@@ -15,9 +15,10 @@ body {
     display: block;
 }
 
-html, body{
+html{
   margin: 0;
   height: 100%;
+  overflow-y: scroll;  
 }
 
 .bmd-layout-content {
@@ -68,74 +69,130 @@ span.bmd-form-group {
 }
 
 
-.app {
-    width: 100vw;
-    height: 100vh;
-    background-color: darkgray;
-    overflow-x: hidden;
-    overflow-y: hidden;
-    display: grid;
-    grid-template-areas: "nav-bar main-view";
-    grid-template-columns: auto 1fr;
-    grid-template-rows: 1fr auto;
-    position: relative;
-    scrollbar-width: none;
-    font-size: 16px;
+.nav-bar {
+  grid-area: nav-bar;
+  width: var(--vertical-nav-width);
+  height: 100%;
+  min-height: 100%;
+  background-color: #000;
+  padding-top: 24px;
+}
+
+.logo {
+  display: grid;
+  place-items: center;
+}
+
+.categories-nav {
+  color: #c4c4c4;
+  padding: 18px 12px;
+}
+
+.category-item-selected {
+  color: #fff;
+  background-color: rgba(50, 50, 50, 0.6);
+  border-radius: 5px;
+}
+
+.category-item {
+  padding: 5px 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.category-item .icon {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  margin-right: 10px;
+}
+
+.category-item .icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.playlists-nav {
+  color: #c4c4c4;
+  padding: 18px 12px;
+}
+
+button {
+  background: transparent;
+  border: none;
+  color: white;
+}
+
+#resultsPage {
+  width: 100%;  
+  padding: 20px;  
+  box-sizing: border-box;  
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+}
+
+#searchResults {
+  width: 100%;  
+  display: flex;
+  flex-direction: column;
+  align-items: center;  /* Center cards */
+}
+
+.card {
+  width: 90%;
+  margin-bottom: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;  
+  box-sizing: border-box;
+}
+
+.card-body {
+  display: flex;
+  align-items: center; 
+  width: 100%;
+}
+
+.img-fluid {
+  flex-shrink: 0; 
+  border-radius: 5px; 
+}
+
+.card-title, .card-text {
+  margin: 0; 
+  padding: 0; 
+}
+
+.card-title {
+  font-size: 1em; 
+}
+
+.card-text {
+  font-size: 0.8em; 
+}
+
+
+.bmd-layout-content {
+  width: 100%;  
+  overflow-y: auto; 
+}
+
+/* Padding for small devices */
+@media (max-width: 600px) {
+  .fixed-bottom {
+      padding-top: 10px;
   }
-  
-  .nav-bar {
-    grid-area: nav-bar;
-    width: var(--vertical-nav-width);
-    height: 100%;
-    min-height: 100%;
-    background-color: #000;
-    padding-top: 24px;
+}
+
+/* Padding for medium to large devices */
+@media (min-width: 601px) {
+  .fixed-bottom {
+      padding-top: 20px;
   }
-  
-  .logo {
-    display: grid;
-    place-items: center;
-  }
-  
-  .categories-nav {
-    color: #c4c4c4;
-    padding: 18px 12px;
-  }
-  
-  .category-item-selected {
-    color: #fff;
-    background-color: rgba(50, 50, 50, 0.6);
-    border-radius: 5px;
-  }
-  
-  .category-item {
-    padding: 5px 16px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin: 5px 0;
-  }
-  
-  .category-item .icon {
-    width: 36px;
-    height: 36px;
-    display: grid;
-    place-items: center;
-    margin-right: 10px;
-  }
-  
-  .category-item .icon svg {
-    width: 24px;
-    height: 24px;
-  }
-  
-  .playlists-nav {
-    color: #c4c4c4;
-    padding: 18px 12px;
-  }
-  
-  button {
-    background: transparent;
-    border: none;
-    color: white;
-  }
+}

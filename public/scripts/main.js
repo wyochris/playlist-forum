@@ -137,73 +137,113 @@ PlaylistManager = class {
 	}
 }
 
-main = function () {
-	console.log("Ready");
-	document.getElementById("songsButton").onclick = (event) => {
-		window.location.href = `/songs.html`;
-	};
-	document.getElementById("playlistsButton").onclick = (event) => {
-		window.location.href = `/index.html`;
-	};
-	document.getElementById("detailsButton").onclick = (event) => {
-		window.location.href = `/details.html`;
-	};
-	document.getElementById("resultsButton").onclick = (event) => {
-		window.location.href = `/results.html`;
-	};
-};
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM ready");
+
+    const searchForm = document.getElementById("searchForm");
+    if (searchForm) {
+        new ResultPageController();
+    }
+
+    setupNavigation();
+});
+
+function setupNavigation() {
+    const buttons = {
+        songsButton: "/songs.html",
+        playlistsButton: "/index.html",
+        detailsButton: "/details.html",
+        resultsButton: "/results.html"
+    };
+
+    Object.keys(buttons).forEach(buttonId => {
+        const button = document.getElementById(buttonId);
+        if (button) {
+            button.onclick = () => {
+                window.location.href = buttons[buttonId];
+            };
+        }
+    });
+}
 
 ResultPageController = class {
 	constructor() {
 		document.getElementById("searchForm").onsubmit = (event) => {
-			handleSearch();
+			event.preventDefault();
+			console.log("Form submitted")
+			this.handleSearch();
 		};
 	}
 
 	handleSearch() {
 		const searchQuery = document.getElementById('searchInput').value;
-		updateSongCards(searchQuery);
-		console.log('handle search finish');
+		console.log('handle search start');
+		this.updateSongCards(searchQuery);
 	}
 
 	updateSongCards(searchQuery) {
-		console.log('querying api');
-		fetch(`http://localhost:5001/lardner-zhang-final-csse280/us-central1/api/search/${searchQuery}`)
-		.then(response => response.json())
-		.then(data => {
+        console.log('querying API');
+        fetch(`http://localhost:5001/lardner-zhang-final-csse280/us-central1/api/search/${searchQuery}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('API response:', data);  // Log the data 
+            // Assume data is an array of tracks or a single track object
 			const searchResultsContainer = document.getElementById('searchResults');
-			searchResultsContainer.innerHTML = ''; // Clear previous content
-			console.log('data fetching');
-			var firstPage = data.body.tracks.items;
-			console.log('I got ' + data.body.tracks.total + ' results!');
-			firstPage.forEach(function(track, index) {
-				console.log(index + ': ' + track.name + ' (' + track.popularity + ')');
-			});
-
-			data.forEach(track => {
-			const card = document.createElement('div');
-			card.className = 'card';
-			const cardBody = document.createElement('div');
-			cardBody.className = 'card-body';
-			const image = document.createElement('img');
-			image.src = track.album.images[0].url;
-			image.className = 'img-fluid';
-			const songTitle = document.createElement('p');
-			songTitle.textContent = track.name;
-
-			console.log(track.name);
-			
-			cardBody.appendChild(image);
-			cardBody.appendChild(songTitle);
-			card.appendChild(cardBody);
-			searchResultsContainer.appendChild(card);
-			});
-		})
-		.catch(error => console.error('Error updating song cards:', error));
-
-		console.log("fetch finish");
+            if (Array.isArray(data)) {
+                data.forEach(track => {
+                    const card = this.createSongCard(track);
+                    searchResultsContainer.appendChild(card);
+                });
+            } else {
+                throw new Error('Unexpected data format');
+            }
+        })
+        .catch(error => {
+            console.error('Error updating song cards:', error);
+        });
+    }
+    
+	createSongCard(track) {
+		const card = document.createElement('div');
+		card.className = 'card';
+	
+		const cardBody = document.createElement('div');
+		cardBody.className = 'card-body';
+		cardBody.style.display = 'flex';  // Set the display to flex
+		cardBody.style.alignItems = 'center';  // Align items vertically
+	
+		const image = document.createElement('img');
+		image.src = track.album.images[0].url;
+		image.className = 'img-fluid';
+		image.style.width = '100px';  // Set a fixed width for the image
+		image.style.height = '100px';  // Set a fixed height for the image
+		image.style.marginRight = '20px';  // Add some margin to the right of the image
+		cardBody.appendChild(image);
+	
+		const textContent = document.createElement('div');
+	
+		const songTitle = document.createElement('h5');
+		songTitle.className = 'card-title';
+		songTitle.textContent = track.name;
+		textContent.appendChild(songTitle);
+	
+		if (track.artists && track.artists.length > 0) {
+			const artistName = document.createElement('p');
+			artistName.className = 'card-text';
+			artistName.textContent = "Artist: " + track.artists.map(artist => artist.name).join(", ");
+			textContent.appendChild(artistName);
+		}
+	
+		cardBody.appendChild(textContent);  // Add the text content next to the image
+		card.appendChild(cardBody);
+		return card;
 	}
+	
+	
 
 }
-
-main();
