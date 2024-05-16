@@ -1,5 +1,6 @@
-var rhit = rhit || {};
 const apiURL = "https://lardner-zhang-final-csse280.web.app/api/"
+
+var rhit = rhit || {};
 
 rhit.FB_COLLECTION_PLAYLIST = "Playlists";
 rhit.FB_COLLECTION_COMMENTS = "Comments";
@@ -10,6 +11,9 @@ rhit.playlistManager = null;
 rhit.songPageManager = null;
 rhit.authManager = null;
 
+FB_COLLECTION_PLAYLIST = "Playlists";
+FB_KEY_PLAYLISTNAME = "playlistName";
+FB_KEY_AUTHOR = "author";
 
 function htmlToElement(html) {
 	var template = document.createElement('template');
@@ -18,21 +22,21 @@ function htmlToElement(html) {
 	return template.content.firstChild;
 }
 
-rhit.Playlist = class {
+Playlist = class {
 	constructor(id, name) {
 		this.id = id;
 		this.playlistName = name;
 	}
 }
 
-rhit.Song = class {
+Song = class {
 	constructor(id, name) {
 		this.id = id;
 		this.name = name;		
 	}
 }
 
-rhit.Comment = class {
+Comment = class {
 	constructor(user, time, content) {
 		this.user = user;
 		this.time = time;
@@ -72,7 +76,7 @@ rhit.authManager = class{
 	get isSignedIn() { return !!this._user; }
 }
 
-rhit.PlaylistPageController = class {
+PlaylistPageController = class {
 	constructor() {
 		document.getElementById("playlistsButton").onclick = (event) => {
 			window.location.href = `/index.html`;
@@ -127,11 +131,12 @@ rhit.PlaylistPageController = class {
 	}
 }
 
-rhit.PlaylistManager = class {
+PlaylistManager = class {
 	constructor(uid) {
 		this._uid = uid;
 		this._documentSnapshots = [];
 		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_PLAYLIST);
+		this._ref = firebase.firestore().collection(FB_COLLECTION_MOVIEQUOTE);
 		this._unsubscribe = null;
  		}
 
@@ -139,6 +144,8 @@ rhit.PlaylistManager = class {
 		this._ref.add({
 			[rhit.FB_KEY_AUTHOR]: rhit.authManager.uid,
 			[rhit.FB_KEY_PLAYLISTNAME]: playlistName,
+			[FB_KEY_AUTHOR]: fbAuthManager.uid,
+			[FB_KEY_PLAYLISTNAME]: playlistName,
 		})
 	}
 
@@ -147,7 +154,7 @@ rhit.PlaylistManager = class {
 		.limit(50);
 
 		if(this._uid){
-			query = query.where(rhit.FB_KEY_AUTHOR, "==", this._uid);
+			query = query.where(FB_KEY_AUTHOR, "==", this._uid);
 		}
 
 		this._unsubscribe = query.onSnapshot((querySnapshot) => {
@@ -166,9 +173,9 @@ rhit.PlaylistManager = class {
 
 	getPlaylistAtIndex(index) {
 		const snap = this._documentSnapshots[index];
-		const pl = new rhit.Playlist(
+		const pl = new Playlist(
 			snap.id,
-			snap.get(rhit.FB_KEY_PLAYLISTNAME),
+			snap.get(FB_KEY_PLAYLISTNAME),
 		);
 		console.log(pl.id + ", " + pl.playlistName);
 		return pl;
@@ -235,3 +242,114 @@ function updateSongCards(searchQuery) {
   
 
 rhit.main();
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM ready");
+
+    const searchForm = document.getElementById("searchForm");
+    if (searchForm) {
+        new ResultPageController();
+    }
+
+    setupNavigation();
+});
+
+function setupNavigation() {
+    const buttons = {
+        songsButton: "/songs.html",
+        playlistsButton: "/index.html",
+        detailsButton: "/details.html",
+        resultsButton: "/results.html"
+    };
+
+    Object.keys(buttons).forEach(buttonId => {
+        const button = document.getElementById(buttonId);
+        if (button) {
+            button.onclick = () => {
+                window.location.href = buttons[buttonId];
+            };
+        }
+    });
+}
+
+ResultPageController = class {
+	constructor() {
+		document.getElementById("searchForm").onsubmit = (event) => {
+			event.preventDefault();
+			console.log("Form submitted")
+			this.handleSearch();
+		};
+	}
+
+	handleSearch() {
+		const searchQuery = document.getElementById('searchInput').value;
+		console.log('handle search start');
+		this.updateSongCards(searchQuery);
+	}
+
+	updateSongCards(searchQuery) {
+        console.log('querying API');
+        fetch(`http://localhost:5001/lardner-zhang-final-csse280/us-central1/api/search/${searchQuery}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('API response:', data);  // Log the data 
+            // Assume data is an array of tracks or a single track object
+			const searchResultsContainer = document.getElementById('searchResults');
+            if (Array.isArray(data)) {
+                data.forEach(track => {
+                    const card = this.createSongCard(track);
+                    searchResultsContainer.appendChild(card);
+                });
+            } else {
+                throw new Error('Unexpected data format');
+            }
+        })
+        .catch(error => {
+            console.error('Error updating song cards:', error);
+        });
+    }
+    
+	createSongCard(track) {
+		const card = document.createElement('div');
+		card.className = 'card';
+	
+		const cardBody = document.createElement('div');
+		cardBody.className = 'card-body';
+		cardBody.style.display = 'flex';  // Set the display to flex
+		cardBody.style.alignItems = 'center';  // Align items vertically
+	
+		const image = document.createElement('img');
+		image.src = track.album.images[0].url;
+		image.className = 'img-fluid';
+		image.style.width = '100px';  // Set a fixed width for the image
+		image.style.height = '100px';  // Set a fixed height for the image
+		image.style.marginRight = '20px';  // Add some margin to the right of the image
+		cardBody.appendChild(image);
+	
+		const textContent = document.createElement('div');
+	
+		const songTitle = document.createElement('h5');
+		songTitle.className = 'card-title';
+		songTitle.textContent = track.name;
+		textContent.appendChild(songTitle);
+	
+		if (track.artists && track.artists.length > 0) {
+			const artistName = document.createElement('p');
+			artistName.className = 'card-text';
+			artistName.textContent = "Artist: " + track.artists.map(artist => artist.name).join(", ");
+			textContent.appendChild(artistName);
+		}
+	
+		cardBody.appendChild(textContent);  // Add the text content next to the image
+		card.appendChild(cardBody);
+		return card;
+	}
+	
+	
+
+}

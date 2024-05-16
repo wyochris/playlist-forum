@@ -20,7 +20,8 @@
       <nav class="navbar navbar-dark fixed-top">
         <div class="container-fluid">
           <div class="dropdown">
-            <button class="btn btn-tertiary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <button class="btn btn-tertiary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
               <i class="material-icons">settings</i>
             </button>
             <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-left">
@@ -30,25 +31,24 @@
               <li><a class="dropdown-item" href="#">Logout</a></li>
             </ul>
           </div>
-          <form class="d-flex" onsubmit="event.preventDefault(); handleSearch()">
+          <form id="searchForm" class="d-flex">
             <input class=" me-2" type="text" id="searchInput" placeholder="Enter track name">
             <button class="btn btn-outline-success" type="submit">Search</button>
           </form>
         </div>
       </nav>
     </header>
-    
-    <main class="bmd-layout-content">
-        <div id="songsPage" class="container page-container">
+
+    <div id="resultsPage">
+        <div id="resultsPage" class="container page-container">
           <h1 class="text-center text-light">Search Results</h1>
-          <div id="searchResults" class="container page-container">
+          <div id="searchResults">
             <!-- Song cards will be dynamically added here -->
           </div>
         </div>
-      </main>
-    
+    </div>
   </div>
-  
+
   <nav class="bottom-navbar navbar navbar-dark fixed-bottom">
     <div class="container text-center">
       <div class="row">
@@ -61,11 +61,14 @@
         <div id="detailsButton" class="col-4" style="background-color: green;">
           <i class="material-icons">menu</i>
         </div>
+        <div id="resultsButton" class="col-4" style="background-color: black;">
+          <i class="material-icons">menu</i>
+        </div>
       </div>
-    </div>    
+    </div>
   </nav>
-  
-  
+
+
   <script src="scripts/jquery.min.js"></script>
   <script src="scripts/popper.js"></script>
   <script src="scripts/bootstrap-material-design.js"></script>
