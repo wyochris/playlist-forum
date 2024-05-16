@@ -500,7 +500,13 @@ ResultPageController = class {
 		});
 	}
 	
-	
-	
-	
+}
+
+DetailsPageManager = class { 
+	constructor(songID){
+		const db = firebase.firestore(); 
+	}
+
+
+
 }
