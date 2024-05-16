@@ -300,6 +300,8 @@ rhit.main = function () {
 		//rhit.checkForRedirects();
 		rhit.initializePage();
 	});
+
+	
 };
 rhit.main();
   
@@ -413,25 +415,92 @@ ResultPageController = class {
 			artistName.textContent = "Artist: " + track.artists.map(artist => artist.name).join(", ");
 			textContent.appendChild(artistName);
 		}
-
-		const plusButton = document.createElement('button');
-		plusButton.className = 'btn btn-outline-primary';
-		plusButton.style.marginLeft = 'auto'
-
-		const plusIcon = document.createElement('i');
-    	plusIcon.className = 'bi bi-plus-lg'; 
-   		plusButton.appendChild(plusIcon);
-
-
-		plusButton.addEventListener('click', () => {
-			console.log('Add to playlist:', track.name); // TODO more code for firebase
-		});
 	
 		cardBody.appendChild(textContent); 
 		card.appendChild(cardBody);
-		card.appendChild(plusButton);
+
+		const dropdown = document.createElement('div');
+		dropdown.className = 'dropdown';
+	
+		const dropButton = document.createElement('button');
+		dropButton.className = 'btn btn-secondary dropdown-toggle btn-outline-primary';
+		dropButton.type = 'button';
+		dropButton.id = 'dropdownMenuButton';
+		dropButton.dataset.toggle = 'dropdown';
+		dropButton.innerText = '+';
+	
+		const dropdownMenu = document.createElement('div');
+		dropdownMenu.className = 'dropdown-menu';
+		dropdownMenu.setAttribute('aria-labelledby', 'dropdownMenuButton');
+	
+		// Function to populate dropdown
+		this.populateDropdown(dropdownMenu, track);
+	
+		dropdown.appendChild(dropButton);
+		dropdown.appendChild(dropdownMenu);
+		card.appendChild(dropdown);
 
 		return card;
 	}
+
+	populateDropdown(menu, track) {
+		const db = firebase.firestore();
+		db.collection('Playlists').get().then(querySnapshot => {
+			querySnapshot.forEach(doc => {
+				const playlistName = doc.data().playlistName; //playlistName field
+				const option = document.createElement('a');
+				option.className = 'dropdown-item';
+				option.href = '#';
+				option.textContent = playlistName;
+				option.onclick = () => this.addSongToPlaylist(track, doc.id); // Use the doc ID 
+				menu.appendChild(option);
+			});
+		}).catch(error => {
+			console.error("Error getting playlists:", error);
+	});
+	}
+
+	//firebase things
+	addSongToPlaylist(track, playlistId) {
+		const db = firebase.firestore(); 
+		const playlistRef = db.collection('Playlists').doc(playlistId);
+		console.log(track);
+		console.log(track.type);
+
+		const songData = {
+			spotifyId: track.id,
+			title: track.name,
+			// artist: track.artists[0].name, // only first
+			artist: track.artists.map(artist => artist.name).join(", "), // more than one
+			albumName: track.album.name,
+			albumImageUrl: track.album.images[0].url, 
+			releaseDate: track.album.release_date,
+			trackNumber: track.track_number,
+			durationMs: track.duration_ms,
+			previewUrl: track.preview_url,
+			popularity: track.popularity,
+			explicit: track.explicit,
+			addedOn: new Date() // Timestamp
+		};
+	
+		// Check if the song already exists in the playlist
+		playlistRef.collection('songs').doc(track.id).get().then(doc => {
+			if (!doc.exists) {
+				// If not, add it
+				playlistRef.collection('songs').doc(track.id).set(songData)
+				.then(() => {
+					console.log('Song added to playlist successfully!');
+				})
+				.catch(error => {
+					console.error('Error adding song to playlist:', error);
+				});
+			} else {
+				console.log('Song already exists in the playlist');
+			}
+		});
+	}
+	
+	
+	
 	
 }
