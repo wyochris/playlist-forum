@@ -271,7 +271,6 @@ rhit.SongPageManager = class {
 			snap.get(FB_KEY_LAST_TOUCHED),
 			snap.get(FB_KEY_CONTENT),
 		);
-		//console.log(pl.id + ", " + pl.playlistName);
 		return cm;
 	}
 }
