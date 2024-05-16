@@ -2,8 +2,14 @@ var rhit = rhit || {};
 const apiURL = "https://lardner-zhang-final-csse280.web.app/api/"
 
 rhit.FB_COLLECTION_PLAYLIST = "Playlists";
+rhit.FB_COLLECTION_COMMENTS = "Comments";
+rhit.FB_COLLECTION_SONGS = "Songs";
 rhit.FB_KEY_PLAYLISTNAME = "playlistName";
 rhit.FB_KEY_AUTHOR = "author";
+rhit.playlistManager = null;
+rhit.songPageManager = null;
+rhit.authManager = null;
+
 
 function htmlToElement(html) {
 	var template = document.createElement('template');
@@ -15,7 +21,7 @@ function htmlToElement(html) {
 rhit.Playlist = class {
 	constructor(id, name) {
 		this.id = id;
-		this.name = name;
+		this.playlistName = name;
 	}
 }
 
@@ -34,24 +40,54 @@ rhit.Comment = class {
 	}
 }
 
+rhit.authManager = class{
+	constructor() {
+		this.user = null;
+	}
+
+	beginListening(changeListener) {
+		firebase.auth().onAuthStateChanged((user) => {
+			this._user = user;
+			changeListener();
+		});
+	}
+
+	signIn() {
+		firebase.auth().signInAnonymously();
+	}
+
+	// signIn() {
+	// 	Rosefire.signIn("db6d8a32-9c4c-4f18-adb7-d5eaec480b32", (err, rfUser) => {
+	// 		if (err) {
+	// 			console.log("Rosefire error!", err);
+	// 			return;
+	// 		}
+	// 		console.log("Rosefire success!", rfUser);
+
+	// 		firebase.auth().signInWithCustomToken(rfUser.token);
+	// 	});
+	// }
+	signOut() { firebase.auth().signOut(); }
+	get uid() { return this._user.uid; }
+	get isSignedIn() { return !!this._user; }
+}
+
 rhit.PlaylistPageController = class {
 	constructor() {
 		document.getElementById("playlistsButton").onclick = (event) => {
 			window.location.href = `/index.html`;
 		};
 
-		document.querySelector("#myQuotes").onclick = (event) => {
-			//window.location.href = `/list.html?uid=${rhit.fbAuthManager.uid}`;
-		};
+		
 
-		document.querySelector("#logout").onclick = (event) => {
-			rhit.fbAuthManager.signOut();
+		document.querySelector("#logOutButton").onclick = (event) => {
+			rhit.authManager.signIn();
 		};
 
 		document.querySelector("#submit").onclick = (event) => {
 			const playlistName = document.querySelector("#playlistName").value;
 			console.log(playlistName);
-			rhit.fbMovieQuotesManager.add(playlistName);
+			rhit.playlistManager.add(playlistName);
 		};
 
 		$("#addPlaylist").on("show.bs.modal", (event) => {
@@ -61,25 +97,25 @@ rhit.PlaylistPageController = class {
 			document.getElementById("playlistName").focus();
 		});
 
-		rhit.PlaylistManager.beginListening(this.updateList.bind(this));
+		rhit.playlistManager.beginListening(this.updateList.bind(this));
 	}
 
-	_createCard(playlistName) {
+	_createCard(pl) {
 		//console.log(mq.quote);
 		return htmlToElement(`<div class="card">
         <div class="card-body">
-          <image src="https://i.scdn.co/image/ab67616d0000485102d63d77b84d4927a80d5252">&nbsp; ${playlistName}</image>
+          <image src="https://i.scdn.co/image/ab67616d0000485102d63d77b84d4927a80d5252">&nbsp; ${pl.playlistName}</image>
         </div>
       </div>`);
 	}
 
 	updateList() {
-		const newList = htmlToElement('<div id="listContainer" class="container page-container"></div>');
-		for (let i = 0; i < rhit.PlaylistManager.length; i++) {
-			const pl = rhit.PlaylistManager.getPlaylistAtIndex(i);
+		const newList = htmlToElement('<div id="listContainer"></div>');
+		for (let i = 0; i < rhit.playlistManager.length; i++) {
+			const pl = rhit.playlistManager.getPlaylistAtIndex(i);
 			const newCard = this._createCard(pl);
 			newCard.onclick = (event) => {
-				window.location.href = `/details.html?id=${pl.id}`;
+				window.location.href = `/songs.html?id=${pl.id}`;
 			};
 			newList.appendChild(newCard);
 		}
@@ -95,13 +131,13 @@ rhit.PlaylistManager = class {
 	constructor(uid) {
 		this._uid = uid;
 		this._documentSnapshots = [];
-		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_MOVIEQUOTE);
+		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_PLAYLIST);
 		this._unsubscribe = null;
  		}
 
 	add(playlistName) {
 		this._ref.add({
-			[rhit.FB_KEY_AUTHOR]: rhit.fbAuthManager.uid,
+			[rhit.FB_KEY_AUTHOR]: rhit.authManager.uid,
 			[rhit.FB_KEY_PLAYLISTNAME]: playlistName,
 		})
 	}
@@ -134,23 +170,33 @@ rhit.PlaylistManager = class {
 			snap.id,
 			snap.get(rhit.FB_KEY_PLAYLISTNAME),
 		);
+		console.log(pl.id + ", " + pl.playlistName);
 		return pl;
 	}
 }
 
+rhit.SongPageController 
+
+rhit.SongPageManager
+
+rhit.initializePage = function () {
+	const urlParams = new URLSearchParams(window.location.search);
+	if (document.querySelector("#mainPage")) {
+		const uid = urlParams.get("uid");
+		rhit.playlistManager = new rhit.PlaylistManager(uid);
+		new rhit.PlaylistPageController();
+	}	
+};
 
 
 rhit.main = function () {
 	console.log("Ready");
-	document.getElementById("songsButton").onclick = (event) => {
-		window.location.href = `/songs.html`;
-	};
-	document.getElementById("playlistsButton").onclick = (event) => {
-		window.location.href = `/index.html`;
-	};
-	document.getElementById("detailsButton").onclick = (event) => {
-		window.location.href = `/details.html`;
-	};
+	rhit.authManager = new rhit.authManager();
+	rhit.authManager.beginListening(() => {
+		console.log(`The auth state has changed.   isSignedIn = ${rhit.authManager.isSignedIn}`);
+		//rhit.checkForRedirects();
+		rhit.initializePage();
+	});
 };
 
 // Function to fetch Spotify data and update song cards
