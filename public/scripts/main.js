@@ -353,7 +353,7 @@ ResultPageController = class {
 
 	updateSongCards(searchQuery) {
         console.log('querying API');
-        fetch(`http://localhost:5001/lardner-zhang-final-csse280/us-central1/api/search/${searchQuery}`)
+        fetch(`https://us-central1-lardner-zhang-final-csse280.cloudfunctions.net/api/search/${searchQuery}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok: ' + response.statusText);
