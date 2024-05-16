@@ -4,7 +4,7 @@ var rhit = rhit || {};
 
 rhit.FB_COLLECTION_PLAYLIST = "Playlists";
 rhit.FB_COLLECTION_COMMENTS = "Comments";
-rhit.FB_COLLECTION_SONGS = "songs";
+rhit.FB_COLLECTION_SONGS = "Songs";
 rhit.FB_KEY_PLAYLISTNAME = "playlistName";
 rhit.FB_KEY_AUTHOR = "author";
 rhit.FB_KEY_COMMENTER = "Commenter";
@@ -232,7 +232,6 @@ rhit.SongPageManager = class {
 	constructor(pid) {
 		this._documentSnapshots = [];
 		this._commRef = firebase.firestore().collection(rhit.FB_COLLECTION_PLAYLIST).doc(pid).collection(rhit.FB_COLLECTION_COMMENTS);
-		this._songRef = firebase.firestore().collection(rhit.FB_COLLECTION_PLAYLIST).doc(pid).collection(rhit.FB_COLLECTION_SONGS);
 		this._unsubscribe = null;
  		}
 
@@ -480,8 +479,7 @@ ResultPageController = class {
 			previewUrl: track.preview_url,
 			popularity: track.popularity,
 			explicit: track.explicit,
-			addedOn: new Date(), // Timestamp
-			id: track.id
+			addedOn: new Date() // Timestamp
 		};
 	
 		// Check if the song already exists in the playlist
@@ -504,9 +502,8 @@ ResultPageController = class {
 }
 
 DetailsPageManager = class { 
-	constructor(){
+	constructor(songID){
 		const db = firebase.firestore(); 
-		this.songID = "3YfS47QufnLDFA71FUsgCM"
 	}
 
 
