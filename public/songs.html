@@ -65,9 +65,9 @@
     <div class="offcanvas offcanvas-bottom" tabindex="-1" id="CommentSection" aria-labelledby="offcanvasBottomLabel">
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasBottomLabel">Comment Section</h5>
-        <form class="d-flex mx-auto my-auto" style="margin: 9px;">
+        <form class="d-flex mx-auto my-auto" style="margin: 9px;" onsubmit="preventDefault()">
           <input id="commentContent" class="form-control me-2" type="search" style="border-top-width: 4px; width: 500px">
-          <button id="addCommentButton" class="btn btn-outline-success" type="submit" style="margin: 0px;">Add Comment</button>
+          <button id="addCommentButton" class="btn btn-outline-success" type="button" style="margin: 0px;">Add Comment</button>
         </form>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
@@ -89,16 +89,16 @@
   <nav class="bottom-navbar navbar navbar-dark fixed-bottom">
     <div class="container-fluid">
       <div class="row">
-        <div id="playlistsButton" class="col-3" style="background-color: green">
+        <div id="playlistsButton" class="col-3" style="background-color: gray">
           <i class="material-icons">menu</i>
         </div>
         <div id="songsButton" class="col-3" style="background-color: black;">
           <i class="material-icons">menu</i>
         </div>
-        <div id="detailsButton" class="col-3" style="background-color: green;">
+        <div id="detailsButton" class="col-3" style="background-color: gray;">
           <i class="material-icons">menu</i>
         </div>
-        <div id="resultsButton" class="col-3" style="background-color: green;">
+        <div id="resultsButton" class="col-3" style="background-color: gray;">
           <i class="material-icons">menu</i>
         </div>
       </div>
