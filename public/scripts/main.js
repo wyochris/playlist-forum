@@ -7,6 +7,9 @@ rhit.FB_COLLECTION_COMMENTS = "Comments";
 rhit.FB_COLLECTION_SONGS = "Songs";
 rhit.FB_KEY_PLAYLISTNAME = "playlistName";
 rhit.FB_KEY_AUTHOR = "author";
+rhit.FB_KEY_COMMENTER = "Commenter";
+rhit.FB_KEY_CONTENT = "Content";
+rhit.FB_KEY_LAST_TOUCHED = "Modified";
 rhit.playlistManager = null;
 rhit.songPageManager = null;
 rhit.authManager = null;
@@ -82,8 +85,6 @@ rhit.PlaylistPageController = class {
 			window.location.href = `/index.html`;
 		};
 
-		
-
 		document.querySelector("#logOutButton").onclick = (event) => {
 			rhit.authManager.signIn();
 		};
@@ -119,7 +120,7 @@ rhit.PlaylistPageController = class {
 			const pl = rhit.playlistManager.getPlaylistAtIndex(i);
 			const newCard = this._createCard(pl);
 			newCard.onclick = (event) => {
-				window.location.href = `/songs.html?id=${pl.id}`;
+				window.location.href = `/songs.html?pid=${pl.id}`;
 			};
 			newList.appendChild(newCard);
 		}
@@ -179,9 +180,102 @@ rhit.PlaylistManager = class {
 	}
 }
 
-//rhit.SongPageController 
+rhit.SongPageController = class {
+	constructor() {
+		document.getElementById("playlistsButton").onclick = (event) => {
+			window.location.href = `/index.html`;
+		};
 
-//rhit.SongPageManager
+		// document.querySelector("#logOutButton").onclick = (event) => {
+		// 	rhit.authManager.signIn();
+		// };
+
+		document.querySelector("#addCommentButton").onclick = (event) => {
+			const content = document.querySelector("#commentContent").value;
+			console.log(content);
+			rhit.songPageManager.addComment(content);
+		};
+
+		rhit.songPageManager.beginListening(this.updateComment.bind(this));
+	}
+
+	_createComment(cm) {
+		console.log("creating" + cm.Content);
+		return htmlToElement(`<div class="card">
+		<div class="card-body">
+		  <image class="profile-picture" src="https://yt3.ggpht.com/a/default-user=s88-c-k-c0x00ffffff-no-rj"></image>
+		  
+		  <h5 id="author">${cm.Commenter} | ${cm.Modified}</h5>
+		  <h4 id="content">${cm.Content}</h4 >
+			
+		  </div>
+		</div>`);
+	}
+
+	updateComment() {
+		const newList = htmlToElement('<div id="commentContainer" class="offcanvas-body small"></div>');
+		for (let i = 0; i < rhit.songPageManager.commentLength; i++) {
+			const cm = rhit.songPageManager.getComment(i);
+			const newCard = this._createComment(cm);
+			newList.appendChild(newCard);
+		}
+		const oldList = document.querySelector("#commentContainer");
+		oldList.removeAttribute("id");
+		oldList.hidden = true;
+
+		oldList.parentElement.appendChild(newList);
+		console.log("updating finished");
+	}
+}
+
+rhit.SongPageManager = class {
+	constructor(pid) {
+		this._documentSnapshots = [];
+		this._commRef = firebase.firestore().collection(rhit.FB_COLLECTION_PLAYLIST).doc(pid).collection(rhit.FB_COLLECTION_COMMENTS);
+		this._songRef = firebase.firestore().collection(rhit.FB_COLLECTION_PLAYLIST).doc(pid).collection(rhit.FB_COLLECTION_SONGS);
+		this._unsubscribe = null;
+ 		}
+
+	addComment(content) {
+		console.log("adding " + content);
+		this._commRef.add({
+			[rhit.FB_KEY_COMMENTER]: rhit.authManager.uid,
+			[rhit.FB_KEY_CONTENT]: content,
+			[rhit.FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),			
+		})
+	}
+
+	beginListening(changeListener) {
+		console.log("listening");
+		let query = this._commRef
+		.limit(50);
+
+		this._unsubscribe = query.onSnapshot((querySnapshot) => {
+				this._documentSnapshots = querySnapshot.docs;
+				changeListener();
+			});
+		console.log("listening done");
+	}
+
+	stopListening() {
+		this._unsubscribe();
+	}
+
+	get length() {
+		return this._documentSnapshots.length;
+	}
+
+	getComment(index) {
+		const snap = this._documentSnapshots[index];
+		const cm = new Playlist(
+			snap.get(FB_KEY_COMMENTER),
+			snap.get(FB_KEY_LAST_TOUCHED),
+			snap.get(FB_KEY_CONTENT),
+		);
+		//console.log(pl.id + ", " + pl.playlistName);
+		return cm;
+	}
+}
 
 rhit.initializePage = function () {
 	const urlParams = new URLSearchParams(window.location.search);
@@ -189,6 +283,11 @@ rhit.initializePage = function () {
 		const uid = urlParams.get("uid");
 		rhit.playlistManager = new rhit.PlaylistManager(uid);
 		new rhit.PlaylistPageController();
+	}	
+	if (document.querySelector("#songsPage")) {
+		const pid = urlParams.get("pid");
+		rhit.songPageManager = new rhit.SongPageManager(pid);
+		new rhit.SongPageController();
 	}	
 };
 
@@ -202,6 +301,7 @@ rhit.main = function () {
 		rhit.initializePage();
 	});
 };
+rhit.main();
 
 // Function to fetch Spotify data and update song cards
 function updateSongCards(searchQuery) {
@@ -236,9 +336,6 @@ function updateSongCards(searchQuery) {
 	const searchQuery = document.getElementById('searchInput').value;
 	window.location.href = `/results.html?query=${encodeURIComponent(searchQuery)}`;
   }
-  
-
-rhit.main();
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM ready");

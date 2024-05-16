@@ -66,12 +66,12 @@
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasBottomLabel">Comment Section</h5>
         <form class="d-flex mx-auto my-auto" style="margin: 9px;">
-          <input class="form-control me-2" type="search" style="border-top-width: 4px; width: 500px">
-          <button class="btn btn-outline-success" type="submit" style="margin: 0px;">Add Comment</button>
+          <input id="commentContent" class="form-control me-2" type="search" style="border-top-width: 4px; width: 500px">
+          <button id="addCommentButton" class="btn btn-outline-success" type="submit" style="margin: 0px;">Add Comment</button>
         </form>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
-      <div class="offcanvas-body small">
+      <div id="commentContainer" class="offcanvas-body small">
         <div class="card">
           <div class="card-body">
             <image class="profile-picture" src="https://yt3.ggpht.com/a/default-user=s88-c-k-c0x00ffffff-no-rj"></image>
@@ -79,30 +79,12 @@
             <h5 id="author">Anonymous user | 10 hours ago</h5>
             <h4 id="content">Really like the song</h4 >
               
-            </div>
           </div>
-          <div class="card">
-            <div class="card-body">
-              <image class="profile-picture" src="https://yt3.ggpht.com/a/default-user=s88-c-k-c0x00ffffff-no-rj"></image>
-              
-              <h5 id="author">Anonymous user | 10 hours ago</h5>
-              <h4 id="content">Really like the song</h4 >
-                
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-body">
-                <image class="profile-picture" src="https://yt3.ggpht.com/a/default-user=s88-c-k-c0x00ffffff-no-rj"></image>
-                
-                <h5 id="author">Anonymous user | 10 hours ago</h5>
-                <h4 id="content">Really like the song</h4 >
-                  
-                </div>
-              </div>
-            </div>
-          </div>
+      </div>
+      </div>
+    </div>
           
-        </div>
+  </div>
         
         <nav class="bottom-navbar navbar navbar-dark fixed-bottom">
           <div class="container text-center">
