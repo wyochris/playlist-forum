@@ -26,7 +26,7 @@ Playlist = class {
 	constructor(id, name) {
 		this.id = id;
 		this.playlistName = name;
-	}
+	} 
 }
 
 Song = class {
@@ -76,7 +76,7 @@ rhit.authManager = class{
 	get isSignedIn() { return !!this._user; }
 }
 
-PlaylistPageController = class {
+rhit.PlaylistPageController = class {
 	constructor() {
 		document.getElementById("playlistsButton").onclick = (event) => {
 			window.location.href = `/index.html`;
@@ -131,12 +131,11 @@ PlaylistPageController = class {
 	}
 }
 
-PlaylistManager = class {
+rhit.PlaylistManager = class {
 	constructor(uid) {
 		this._uid = uid;
 		this._documentSnapshots = [];
 		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_PLAYLIST);
-		this._ref = firebase.firestore().collection(FB_COLLECTION_MOVIEQUOTE);
 		this._unsubscribe = null;
  		}
 
@@ -144,8 +143,6 @@ PlaylistManager = class {
 		this._ref.add({
 			[rhit.FB_KEY_AUTHOR]: rhit.authManager.uid,
 			[rhit.FB_KEY_PLAYLISTNAME]: playlistName,
-			[FB_KEY_AUTHOR]: fbAuthManager.uid,
-			[FB_KEY_PLAYLISTNAME]: playlistName,
 		})
 	}
 
@@ -182,9 +179,9 @@ PlaylistManager = class {
 	}
 }
 
-rhit.SongPageController 
+//rhit.SongPageController 
 
-rhit.SongPageManager
+//rhit.SongPageManager
 
 rhit.initializePage = function () {
 	const urlParams = new URLSearchParams(window.location.search);
