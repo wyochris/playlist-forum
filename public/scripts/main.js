@@ -302,40 +302,7 @@ rhit.main = function () {
 	});
 };
 rhit.main();
-
-// Function to fetch Spotify data and update song cards
-function updateSongCards(searchQuery) {
-	fetch(`/search?query=${encodeURIComponent(searchQuery)}`)
-	  .then(response => response.json())
-	  .then(data => {
-		const searchResultsContainer = document.getElementById('searchResults');
-		searchResultsContainer.innerHTML = ''; // Clear previous content
-		
-		data.forEach(track => {
-		  const card = document.createElement('div');
-		  card.className = 'card';
-		  const cardBody = document.createElement('div');
-		  cardBody.className = 'card-body';
-		  const image = document.createElement('img');
-		  image.src = track.album.images[0].url;
-		  image.className = 'img-fluid';
-		  const songTitle = document.createElement('p');
-		  songTitle.textContent = track.name;
-		  
-		  cardBody.appendChild(image);
-		  cardBody.appendChild(songTitle);
-		  card.appendChild(cardBody);
-		  searchResultsContainer.appendChild(card);
-		});
-	  })
-	  .catch(error => console.error('Error updating song cards:', error));
-  }
   
-  // when search button clicked
-  function handleSearch() {
-	const searchQuery = document.getElementById('searchInput').value;
-	window.location.href = `/results.html?query=${encodeURIComponent(searchQuery)}`;
-  }
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM ready");
@@ -379,6 +346,7 @@ ResultPageController = class {
 		const searchQuery = document.getElementById('searchInput').value;
 		console.log('handle search start');
 		this.updateSongCards(searchQuery);
+		document.getElementById('searchInput').value = '';
 	}
 
 	updateSongCards(searchQuery) {
@@ -391,13 +359,20 @@ ResultPageController = class {
             return response.json();
         })
         .then(data => {
-            console.log('API response:', data);  // Log the data 
-            // Assume data is an array of tracks or a single track object
+            console.log('API response:', data);
+            // data is an array
 			const searchResultsContainer = document.getElementById('searchResults');
+			searchResultsContainer.innerHTML = '';
             if (Array.isArray(data)) {
-                data.forEach(track => {
+                data.forEach((track, index) => {
                     const card = this.createSongCard(track);
+
+					if (index === data.length - 1) {
+						card.classList.add('last-card'); // for css
+					}
+					
                     searchResultsContainer.appendChild(card);
+					
                 });
             } else {
                 throw new Error('Unexpected data format');
@@ -410,19 +385,19 @@ ResultPageController = class {
     
 	createSongCard(track) {
 		const card = document.createElement('div');
-		card.className = 'card';
+		card.className = 'card d-flex flex-row align-items-center justify-content-between';
 	
 		const cardBody = document.createElement('div');
 		cardBody.className = 'card-body';
-		cardBody.style.display = 'flex';  // Set the display to flex
-		cardBody.style.alignItems = 'center';  // Align items vertically
+		cardBody.style.display = 'flex';  
+		cardBody.style.alignItems = 'center'; 
 	
 		const image = document.createElement('img');
 		image.src = track.album.images[0].url;
 		image.className = 'img-fluid';
-		image.style.width = '100px';  // Set a fixed width for the image
-		image.style.height = '100px';  // Set a fixed height for the image
-		image.style.marginRight = '20px';  // Add some margin to the right of the image
+		image.style.width = '100px';  
+		image.style.height = '100px';  
+		image.style.marginRight = '20px';  
 		cardBody.appendChild(image);
 	
 		const textContent = document.createElement('div');
@@ -438,12 +413,25 @@ ResultPageController = class {
 			artistName.textContent = "Artist: " + track.artists.map(artist => artist.name).join(", ");
 			textContent.appendChild(artistName);
 		}
+
+		const plusButton = document.createElement('button');
+		plusButton.className = 'btn btn-outline-primary';
+		plusButton.style.marginLeft = 'auto'
+
+		const plusIcon = document.createElement('i');
+    	plusIcon.className = 'bi bi-plus-lg'; 
+   		plusButton.appendChild(plusIcon);
+
+
+		plusButton.addEventListener('click', () => {
+			console.log('Add to playlist:', track.name); // TODO more code for firebase
+		});
 	
-		cardBody.appendChild(textContent);  // Add the text content next to the image
+		cardBody.appendChild(textContent); 
 		card.appendChild(cardBody);
+		card.appendChild(plusButton);
+
 		return card;
 	}
 	
-	
-
 }

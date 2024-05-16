@@ -7,6 +7,45 @@ body {
   color: white;
 }
 
+.bottom-navbar {
+  background-color: #800000; 
+  width: 100%;                
+  min-height: 7.5%;
+}
+
+.bottom-navbar .container-fluid {
+  padding-right: 4em; 
+  padding-left: 4em;  
+  margin-right: auto;
+  margin-left: auto; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+}
+
+.bottom-navbar .row {
+  width: 100%; 
+  height: 100%;
+}
+
+.bottom-navbar .col-3 {
+  display: flex;
+  justify-content: center; 
+  align-items: center;     
+  padding: 5px 10px;
+  border-right: 1px solid white; 
+}
+
+.bottom-navbar .col-3:last-child {
+  border-right: none;
+}
+
+.material-icons {
+  font-size: 20px; 
+  color: white;
+}
+
+
 .page-container {
   margin-top: 75px;
 }
@@ -67,17 +106,6 @@ span.bmd-form-group {
     padding: 10px 30px;
     border-radius: 5px;
 }
-
-
-.nav-bar {
-  grid-area: nav-bar;
-  width: var(--vertical-nav-width);
-  height: 100%;
-  min-height: 100%;
-  background-color: #000;
-  padding-top: 24px;
-}
-
 .logo {
   display: grid;
   place-items: center;
@@ -140,6 +168,7 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;  /* Center cards */
+  padding-bottom: 20px; 
 }
 
 .card {
@@ -177,22 +206,11 @@ button {
   font-size: 0.8em; 
 }
 
-
 .bmd-layout-content {
   width: 100%;  
   overflow-y: auto; 
 }
 
-/* Padding for small devices */
-@media (max-width: 600px) {
-  .fixed-bottom {
-      padding-top: 10px;
-  }
-}
-
-/* Padding for medium to large devices */
-@media (min-width: 601px) {
-  .fixed-bottom {
-      padding-top: 20px;
-  }
+.last-card {
+  margin-bottom: 40px;
 }
