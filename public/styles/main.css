@@ -1,11 +1,11 @@
 body {
   background: #DDDDDD;
+
 }
 
 html{
   margin: 0;
   height: 100%;
-  overflow-y: scroll;  
 }
 
 body, html {
@@ -13,8 +13,6 @@ body, html {
   padding: 0;
   width: 100%;
   height: 100%;
-  /* background-color: #121212;  */
-  /* color: white; */
 }
 
 .navbar {
@@ -41,23 +39,32 @@ body, html {
 .bottom-navbar .row {
   width: 100%; 
   height: 100%;
+  justify-content: center; 
+
 }
 
 .bottom-navbar .col-3 {
   display: flex;
   justify-content: center; 
   align-items: center;     
-  padding: 5px 10px;
+  padding-top: 5px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
   border-right: 1px solid white; 
+  vertical-align: 0;
+
 }
 
 .bottom-navbar .col-3:last-child {
   border-right: none;
 }
 
-.material-icons {
+.bi {
   font-size: 20px; 
   color: white;
+  vertical-align: 0;
+  height: 1.2em;
 }
 
 
@@ -84,6 +91,10 @@ span.bmd-form-group {
 
 .dropdown-toggle {
   color: black;
+}
+
+.btn-tertiary {
+  background-color: gray;
 }
 
 .comment-button { 
@@ -170,6 +181,7 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center; 
+  overflow-y: scroll;
 }
 
 #searchResults {
@@ -217,7 +229,6 @@ button {
 
 .bmd-layout-content {
   width: 100%;  
-  overflow-y: auto; 
 }
 
 .last-card {
@@ -240,7 +251,7 @@ body, html {
   max-width: 800px; 
   margin: auto; 
   padding: 20px;
-  overflow: auto; 
+
   color: white;
   text-align: center;
   position: relative;

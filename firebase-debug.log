@@ -1,0 +1,55 @@
+[debug] [2024-05-17T16:12:14.661Z] ----------------------------------------------------------------------
+[debug] [2024-05-17T16:12:14.664Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\lardnece\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2024-05-17T16:12:14.664Z] CLI Version:   13.8.1
+[debug] [2024-05-17T16:12:14.665Z] Platform:      win32
+[debug] [2024-05-17T16:12:14.665Z] Node Version:  v20.9.0
+[debug] [2024-05-17T16:12:14.665Z] Time:          Fri May 17 2024 12:12:14 GMT-0400 (Eastern Daylight Time)
+[debug] [2024-05-17T16:12:14.665Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-05-17T16:12:14.744Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-05-17T16:12:14.744Z] > authorizing via signed-in user (chrislardnercl@gmail.com)
+[debug] [2024-05-17T16:12:14.744Z] [iam] checking project lardner-zhang-final-csse280 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2024-05-17T16:12:14.746Z] > refreshing access token with scopes: []
+[debug] [2024-05-17T16:12:14.748Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2024-05-17T16:12:14.748Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-05-17T16:12:14.893Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2024-05-17T16:12:14.893Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-05-17T16:12:14.907Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/lardner-zhang-final-csse280:testIamPermissions [none]
+[debug] [2024-05-17T16:12:14.907Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/lardner-zhang-final-csse280:testIamPermissions x-goog-quota-user=projects/lardner-zhang-final-csse280
+[debug] [2024-05-17T16:12:14.907Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/lardner-zhang-final-csse280:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2024-05-17T16:12:15.008Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/lardner-zhang-final-csse280:testIamPermissions 200
+[debug] [2024-05-17T16:12:15.008Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/lardner-zhang-final-csse280:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2024-05-17T16:12:15.008Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/lardner-zhang-final-csse280/serviceAccounts/lardner-zhang-final-csse280@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2024-05-17T16:12:15.009Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/lardner-zhang-final-csse280/serviceAccounts/lardner-zhang-final-csse280@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2024-05-17T16:12:15.166Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/lardner-zhang-final-csse280/serviceAccounts/lardner-zhang-final-csse280@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2024-05-17T16:12:15.166Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/lardner-zhang-final-csse280/serviceAccounts/lardner-zhang-final-csse280@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2024-05-17T16:12:15.167Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/lardner-zhang-final-csse280 [none]
+[debug] [2024-05-17T16:12:15.399Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/lardner-zhang-final-csse280 200
+[debug] [2024-05-17T16:12:15.400Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/lardner-zhang-final-csse280 {"projectId":"lardner-zhang-final-csse280","projectNumber":"308052716821","displayName":"Lardner-Zhang-Final-CSSE280","name":"projects/lardner-zhang-final-csse280","resources":{"hostingSite":"lardner-zhang-final-csse280"},"state":"ACTIVE","etag":"1_6f2e8a8c-0fd3-4a02-82f6-ac2d55107516"}
+[info] 
+[info] === Deploying to 'lardner-zhang-final-csse280'...
+[info] 
+[info] i  deploying firestore, functions, hosting 
+[info] i  firestore: reading indexes from firestore.indexes.json... 
+[info] i  cloud.firestore: checking firestore.rules for compilation errors... 
+[debug] [2024-05-17T16:12:15.417Z] >>> [apiv2][query] POST https://firebaserules.googleapis.com/v1/projects/lardner-zhang-final-csse280:test [none]
+[debug] [2024-05-17T16:12:15.418Z] >>> [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/lardner-zhang-final-csse280:test [omitted]
+[debug] [2024-05-17T16:12:15.503Z] <<< [apiv2][status] POST https://firebaserules.googleapis.com/v1/projects/lardner-zhang-final-csse280:test 200
+[debug] [2024-05-17T16:12:15.503Z] <<< [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/lardner-zhang-final-csse280:test {"issues":[{"sourcePosition":{"fileName":"firestore.rules"},"description":"Ruleset uses old version (version [1]). Please update to the latest version (version [2]).","severity":"WARNING"}]}
+[warn] !  [W] undefined:undefined - Ruleset uses old version (version [1]). Please update to the latest version (version [2]). 
+[info] +  cloud.firestore: rules file firestore.rules compiled successfully 
+[debug] [2024-05-17T16:12:15.505Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/lardner-zhang-final-csse280 [none]
+[debug] [2024-05-17T16:12:15.603Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/lardner-zhang-final-csse280 200
+[debug] [2024-05-17T16:12:15.603Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/lardner-zhang-final-csse280 {"projectId":"lardner-zhang-final-csse280","projectNumber":"308052716821","displayName":"Lardner-Zhang-Final-CSSE280","name":"projects/lardner-zhang-final-csse280","resources":{"hostingSite":"lardner-zhang-final-csse280"},"state":"ACTIVE","etag":"1_6f2e8a8c-0fd3-4a02-82f6-ac2d55107516"}
+[info] i  functions: preparing codebase default for deployment 
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[info] i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled... 
+[debug] [2024-05-17T16:12:15.605Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/lardner-zhang-final-csse280/services/cloudfunctions.googleapis.com [none]
+[debug] [2024-05-17T16:12:15.605Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/lardner-zhang-final-csse280/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/lardner-zhang-final-csse280
+[debug] [2024-05-17T16:12:15.606Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/lardner-zhang-final-csse280/services/runtimeconfig.googleapis.com [none]
+[debug] [2024-05-17T16:12:15.606Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/lardner-zhang-final-csse280/services/runtimeconfig.googleapis.com x-goog-quota-user=projects/lardner-zhang-final-csse280
+[debug] [2024-05-17T16:12:15.606Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/lardner-zhang-final-csse280/services/cloudbuild.googleapis.com [none]
+[debug] [2024-05-17T16:12:15.606Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/lardner-zhang-final-csse280/services/cloudbuild.googleapis.com x-goog-quota-user=projects/lardner-zhang-final-csse280
+[debug] [2024-05-17T16:12:15.607Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/lardner-zhang-final-csse280/services/artifactregistry.googleapis.com [none]
+[debug] [2024-05-17T16:12:15.607Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/lardner-zhang-final-csse280/services/artifactregistry.googleapis.com x-goog-quota-user=projects/lardner-zhang-final-csse280

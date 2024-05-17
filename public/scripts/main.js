@@ -687,6 +687,7 @@ rhit.SongPageControllerSong = class {
 		const detailsButton = document.createElement('button');
 		detailsButton.className = 'btn btn-secondary btn-outline-primary';
 		detailsButton.type = 'button';
+		detailsButton.innerText = 'info'
 		detailsButton.id = 'detailsButtonCard';
 
 		detailsButton.onclick = () => {
