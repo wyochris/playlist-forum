@@ -4,7 +4,7 @@ var rhit = rhit || {};
 
 rhit.FB_COLLECTION_PLAYLIST = "Playlists";
 rhit.FB_COLLECTION_COMMENTS = "Comments";
-rhit.FB_COLLECTION_SONGS = "Songs";
+FB_COLLECTION_SONG = "songs";
 rhit.FB_KEY_PLAYLISTNAME = "playlistName";
 rhit.FB_KEY_AUTHOR = "author";
 rhit.FB_KEY_COMMENTER = "Commenter";
@@ -13,6 +13,7 @@ rhit.FB_KEY_LAST_TOUCHED = "Modified";
 rhit.playlistManager = null;
 rhit.songPageManager = null;
 rhit.authManager = null;
+rhit.songPageManagerSong = null;
 
 FB_COLLECTION_PLAYLIST = "Playlists";
 FB_KEY_PLAYLISTNAME = "playlistName";
@@ -29,13 +30,13 @@ Playlist = class {
 	constructor(id, name) {
 		this.id = id;
 		this.playlistName = name;
-	} 
+	}
 }
 
 Song = class {
 	constructor(id, name) {
 		this.id = id;
-		this.name = name;		
+		this.name = name;
 	}
 }
 
@@ -47,7 +48,7 @@ Comment = class {
 	}
 }
 
-rhit.authManager = class{
+rhit.authManager = class {
 	constructor() {
 		this.user = null;
 	}
@@ -138,7 +139,7 @@ rhit.PlaylistManager = class {
 		this._documentSnapshots = [];
 		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_PLAYLIST);
 		this._unsubscribe = null;
- 		}
+	}
 
 	add(playlistName) {
 		this._ref.add({
@@ -149,16 +150,16 @@ rhit.PlaylistManager = class {
 
 	beginListening(changeListener) {
 		let query = this._ref
-		.limit(50);
+			.limit(50);
 
-		if(this._uid){
+		if (this._uid) {
 			query = query.where(FB_KEY_AUTHOR, "==", this._uid);
 		}
 
 		this._unsubscribe = query.onSnapshot((querySnapshot) => {
-				this._documentSnapshots = querySnapshot.docs;
-				changeListener();
-			});
+			this._documentSnapshots = querySnapshot.docs;
+			changeListener();
+		});
 	}
 
 	stopListening() {
@@ -233,26 +234,26 @@ rhit.SongPageManager = class {
 		this._documentSnapshots = [];
 		this._commRef = firebase.firestore().collection(rhit.FB_COLLECTION_PLAYLIST).doc(pid).collection(rhit.FB_COLLECTION_COMMENTS);
 		this._unsubscribe = null;
- 		}
+	}
 
 	addComment(content) {
 		console.log("adding " + content);
 		this._commRef.add({
 			[rhit.FB_KEY_COMMENTER]: rhit.authManager.uid,
 			[rhit.FB_KEY_CONTENT]: content,
-			[rhit.FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),			
+			[rhit.FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
 		})
 	}
 
 	beginListening(changeListener) {
 		console.log("listening");
 		let query = this._commRef
-		.limit(50);
+			.limit(50);
 
 		this._unsubscribe = query.onSnapshot((querySnapshot) => {
-				this._documentSnapshots = querySnapshot.docs;
-				changeListener();
-			});
+			this._documentSnapshots = querySnapshot.docs;
+			changeListener();
+		});
 		console.log("listening done");
 	}
 
@@ -281,12 +282,22 @@ rhit.initializePage = function () {
 		const uid = urlParams.get("uid");
 		rhit.playlistManager = new rhit.PlaylistManager(uid);
 		new rhit.PlaylistPageController();
-	}	
+	}
 	if (document.querySelector("#songsPage")) {
 		const pid = urlParams.get("pid");
 		rhit.songPageManager = new rhit.SongPageManager(pid);
+		rhit.songPageManagerSong = new rhit.SongPageManagerSong(pid);
+
 		new rhit.SongPageController();
-	}	
+		new rhit.SongPageControllerSong();
+	}
+
+	if (document.querySelector("#detailsPage")) {
+		const pid = urlParams.get("pid");
+		const sid = urlParams.get("sid");
+
+		new rhit.DetailsPageManager(pid, sid);
+	}
 };
 
 
@@ -299,41 +310,41 @@ rhit.main = function () {
 		rhit.initializePage();
 	});
 
-	
+
 };
 rhit.main();
-  
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM ready");
 
-    const searchForm = document.getElementById("searchForm");
-    if (searchForm) {
-        new ResultPageController();
-    }
+document.addEventListener('DOMContentLoaded', function () {
+	console.log("DOM ready");
 
-    setupNavigation();
+	const searchForm = document.getElementById("searchForm");
+	if (searchForm) {
+		new ResultPageManager();
+	}
+
+	setupNavigation();
 });
 
 function setupNavigation() {
-    const buttons = {
-        songsButton: "/songs.html",
-        playlistsButton: "/index.html",
-        detailsButton: "/details.html",
-        resultsButton: "/results.html"
-    };
+	const buttons = {
+		songsButton: "/songs.html",
+		playlistsButton: "/index.html",
+		detailsButton: "/details.html",
+		resultsButton: "/results.html"
+	};
 
-    Object.keys(buttons).forEach(buttonId => {
-        const button = document.getElementById(buttonId);
-        if (button) {
-            button.onclick = () => {
-                window.location.href = buttons[buttonId];
-            };
-        }
-    });
+	Object.keys(buttons).forEach(buttonId => {
+		const button = document.getElementById(buttonId);
+		if (button) {
+			button.onclick = () => {
+				window.location.href = buttons[buttonId];
+			};
+		}
+	});
 }
 
-ResultPageController = class {
+ResultPageManager = class {
 	constructor() {
 		document.getElementById("searchForm").onsubmit = (event) => {
 			event.preventDefault();
@@ -350,90 +361,90 @@ ResultPageController = class {
 	}
 
 	updateSongCards(searchQuery) {
-        console.log('querying API');
-        fetch(`https://us-central1-lardner-zhang-final-csse280.cloudfunctions.net/api/search/${searchQuery}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok: ' + response.statusText);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('API response:', data);
-            // data is an array
-			const searchResultsContainer = document.getElementById('searchResults');
-			searchResultsContainer.innerHTML = '';
-            if (Array.isArray(data)) {
-                data.forEach((track, index) => {
-                    const card = this.createSongCard(track);
+		console.log('querying API');
+		fetch(`https://us-central1-lardner-zhang-final-csse280.cloudfunctions.net/api/search/${searchQuery}`)
+			.then(response => {
+				if (!response.ok) {
+					throw new Error('Network response was not ok: ' + response.statusText);
+				}
+				return response.json();
+			})
+			.then(data => {
+				console.log('API response:', data);
+				// data is an array
+				const searchResultsContainer = document.getElementById('searchResults');
+				searchResultsContainer.innerHTML = '';
+				if (Array.isArray(data)) {
+					data.forEach((track, index) => {
+						const card = this.createSongCard(track);
 
-					if (index === data.length - 1) {
-						card.classList.add('last-card'); // for css
-					}
-					
-                    searchResultsContainer.appendChild(card);
-					
-                });
-            } else {
-                throw new Error('Unexpected data format');
-            }
-        })
-        .catch(error => {
-            console.error('Error updating song cards:', error);
-        });
-    }
-    
+						if (index === data.length - 1) {
+							card.classList.add('last-card'); // for css
+						}
+
+						searchResultsContainer.appendChild(card);
+
+					});
+				} else {
+					throw new Error('Unexpected data format');
+				}
+			})
+			.catch(error => {
+				console.error('Error updating song cards:', error);
+			});
+	}
+
 	createSongCard(track) {
 		const card = document.createElement('div');
 		card.className = 'card d-flex flex-row align-items-center justify-content-between';
-	
+
 		const cardBody = document.createElement('div');
 		cardBody.className = 'card-body';
-		cardBody.style.display = 'flex';  
-		cardBody.style.alignItems = 'center'; 
-	
+		cardBody.style.display = 'flex';
+		cardBody.style.alignItems = 'center';
+
 		const image = document.createElement('img');
 		image.src = track.album.images[0].url;
 		image.className = 'img-fluid';
-		image.style.width = '100px';  
-		image.style.height = '100px';  
-		image.style.marginRight = '20px';  
+		image.style.width = '100px';
+		image.style.height = '100px';
+		image.style.marginRight = '20px';
 		cardBody.appendChild(image);
-	
+
 		const textContent = document.createElement('div');
-	
+
 		const songTitle = document.createElement('h5');
 		songTitle.className = 'card-title';
 		songTitle.textContent = track.name;
 		textContent.appendChild(songTitle);
-	
+
 		if (track.artists && track.artists.length > 0) {
 			const artistName = document.createElement('p');
 			artistName.className = 'card-text';
 			artistName.textContent = "Artist: " + track.artists.map(artist => artist.name).join(", ");
 			textContent.appendChild(artistName);
 		}
-	
-		cardBody.appendChild(textContent); 
+
+		cardBody.appendChild(textContent);
 		card.appendChild(cardBody);
 
 		const dropdown = document.createElement('div');
 		dropdown.className = 'dropdown';
-	
+
 		const dropButton = document.createElement('button');
 		dropButton.className = 'btn btn-secondary dropdown-toggle btn-outline-primary';
 		dropButton.type = 'button';
 		dropButton.id = 'dropdownMenuButton';
 		dropButton.dataset.toggle = 'dropdown';
 		dropButton.innerText = '+';
-	
+
 		const dropdownMenu = document.createElement('div');
 		dropdownMenu.className = 'dropdown-menu';
 		dropdownMenu.setAttribute('aria-labelledby', 'dropdownMenuButton');
-	
+
 		// Function to populate dropdown
 		this.populateDropdown(dropdownMenu, track);
-	
+
 		dropdown.appendChild(dropButton);
 		dropdown.appendChild(dropdownMenu);
 		card.appendChild(dropdown);
@@ -455,12 +466,12 @@ ResultPageController = class {
 			});
 		}).catch(error => {
 			console.error("Error getting playlists:", error);
-	});
+		});
 	}
 
 	//firebase things
 	addSongToPlaylist(track, playlistId) {
-		const db = firebase.firestore(); 
+		const db = firebase.firestore();
 		const playlistRef = db.collection('Playlists').doc(playlistId);
 		console.log(track);
 		console.log(track.type);
@@ -471,7 +482,7 @@ ResultPageController = class {
 			// artist: track.artists[0].name, // only first
 			artist: track.artists.map(artist => artist.name).join(", "), // more than one
 			albumName: track.album.name,
-			albumImageUrl: track.album.images[0].url, 
+			albumImageUrl: track.album.images[0].url,
 			releaseDate: track.album.release_date,
 			trackNumber: track.track_number,
 			durationMs: track.duration_ms,
@@ -480,31 +491,212 @@ ResultPageController = class {
 			explicit: track.explicit,
 			addedOn: new Date() // Timestamp
 		};
-	
+
 		// Check if the song already exists in the playlist
 		playlistRef.collection('songs').doc(track.id).get().then(doc => {
 			if (!doc.exists) {
 				// If not, add it
 				playlistRef.collection('songs').doc(track.id).set(songData)
-				.then(() => {
-					console.log('Song added to playlist successfully!');
-				})
-				.catch(error => {
-					console.error('Error adding song to playlist:', error);
-				});
+					.then(() => {
+						console.log('Song added to playlist successfully!');
+					})
+					.catch(error => {
+						console.error('Error adding song to playlist:', error);
+					});
 			} else {
 				console.log('Song already exists in the playlist');
 			}
 		});
 	}
-	
+
 }
 
-DetailsPageManager = class { 
-	constructor(songID){
-		const db = firebase.firestore(); 
+rhit.DetailsPageManager = class {
+    constructor(playlistID, songID) {
+        this.db = firebase.firestore();
+		this.playlistID = playlistID
+		this.songID = songID
+		this.songs = []; // use init songs function
+        this.currentIndex = 0;
+        this.initializeSongs();
+    }
+
+	async initializeSongs() {
+        // get all songs in the playlist once
+        const songsSnapshot = await this.db.collection('Playlists').doc(this.playlistID)
+                                           .collection('songs').get();
+        this.songs = songsSnapshot.docs.map(doc => doc.id);
+        this.currentIndex = this.songs.indexOf(this.songID);
+        this.loadSong(this.songID);
+    }
+
+    async loadSong(songID) {
+        const songDoc = await this.db.collection('Playlists').doc(this.playlistID)
+                                     .collection('songs').doc(songID).get();
+        if (songDoc.exists) {
+            this.displaySongDetails(songDoc.data());
+            this.currentSongID = songID; //current song ID
+            this.updateNavigationButtons();
+        } else {
+            console.log('No song found with the given ID');
+        }
+    }
+
+    updateNavigationButtons() {
+        // Update previous song button
+        const prevButton = document.getElementById('prev-song');
+        if (this.currentIndex > 0) {
+            prevButton.style.display = 'block';
+            prevButton.onclick = () => {
+                this.currentIndex--;
+                this.loadSong(this.songs[this.currentIndex]);
+            };
+        } else {
+            prevButton.style.display = 'none';
+        }
+
+        // Update next song button
+        const nextButton = document.getElementById('next-song');
+        if (this.currentIndex < this.songs.length - 1) {
+            nextButton.style.display = 'block';
+            nextButton.onclick = () => {
+                this.currentIndex++;
+                this.loadSong(this.songs[this.currentIndex]);
+            };
+        } else {
+            nextButton.style.display = 'none';
+        }
+
+		document.getElementById('song-position').textContent = `Song ${this.currentIndex + 1} of ${this.songs.length}`;
+    }
+
+    displaySongDetails(songData) {
+		document.querySelector('.album-art').src = songData.albumImageUrl;
+		document.querySelector('.album-art').alt = `${songData.title} album cover`;
+		document.querySelector('.song-title').textContent = songData.title;
+		document.querySelector('.song-artist').textContent = songData.artist;
+		document.getElementById('release-date').textContent = songData.releaseDate;
+		document.getElementById('popularity').textContent = songData.popularity + "/100";
+		document.getElementById('added-on').textContent = new Date(songData.addedOn.seconds * 1000).toLocaleDateString();
+		document.getElementById('album-title').textContent = songData.albumName;
+
+		//audio preview
+		const audio = document.getElementById('audio-preview');
+		audio.querySelector('source').src = songData.previewUrl;
+		audio.load(); // Refresh
+    }
+}
+
+rhit.SongPageManagerSong = class {
+    constructor(pid) {
+        this._pid = pid;
+        this._documentSnapshots = [];
+        this._songRef = firebase.firestore().collection("Playlists").doc(pid).collection("songs");
+        this._unsubscribe = null;
+    }
+
+    async addSong(songData) {
+        const querySnapshot = await this._songRef.get();
+        this._currentIndex = querySnapshot.size + 1;
+
+        return this._songRef.add(songData).then(docRef => {
+            console.log(`Added song with ID: ${docRef.id} and song number: ${this._currentIndex}`);
+        }).catch(error => {
+            console.error("Error adding song: ", error);
+        });
+    }
+
+    beginListening(changeListener) {
+        this._unsubscribe = this._songRef.orderBy("trackNumber").onSnapshot(querySnapshot => {
+            this._documentSnapshots = querySnapshot.docs;
+            changeListener();
+        });
+    }
+
+    stopListening() {
+        this._unsubscribe();
+    }
+
+    get length() {
+        return this._documentSnapshots.length;
+    }
+
+	getSong(index) {
+		const doc = this._documentSnapshots[index];
+		return {
+			songNum: doc.data().songNum,
+			title: doc.data().title,
+			artist: doc.data().artist,
+			albumImageUrl: doc.data().albumImageUrl,
+			id: doc.id,  // Assuming doc.id is the song's unique ID
+			pid: this._pid  // Maintain this when initializing the manager
+		};
 	}
+}
 
 
+rhit.SongPageControllerSong = class {
+    constructor() {
+        rhit.songPageManagerSong.beginListening(this.updateView.bind(this));
+    }
 
+    updateView() {
+        const songContainer = document.querySelector("#songs");
+        songContainer.innerHTML = ''; // Clear existing content
+
+        for (let i = 0; i < rhit.songPageManagerSong.length; i++) {
+            const song = rhit.songPageManagerSong.getSong(i);
+            const songCard = this._createSongCard(song);
+            songContainer.appendChild(songCard);
+        }
+    }
+
+	_createSongCard(song) {
+
+		const card = document.createElement('div');
+		card.className = 'card d-flex flex-row align-items-center justify-content-between';
+
+		const cardBody = document.createElement('div');
+		cardBody.className = 'card-body';
+		cardBody.style.display = 'flex';
+		cardBody.style.alignItems = 'center';
+
+		const image = document.createElement('img');
+		image.src = song.albumImageUrl;
+		image.className = 'img-fluid';
+		image.style.width = '100px';
+		image.style.height = '100px';
+		image.style.marginRight = '20px';
+		cardBody.appendChild(image);
+
+		const textContent = document.createElement('div');
+
+		const songTitle = document.createElement('h5');
+		songTitle.className = 'card-title';
+		songTitle.textContent = song.title;
+		textContent.appendChild(songTitle);
+
+		const artistName = document.createElement('p');
+		artistName.className = 'card-text';
+		artistName.textContent = song.artist;
+		textContent.appendChild(artistName);
+
+		cardBody.appendChild(textContent);
+		card.appendChild(cardBody);
+
+		const detailsButton = document.createElement('button');
+		detailsButton.className = 'btn btn-secondary btn-outline-primary';
+		detailsButton.type = 'button';
+		detailsButton.id = 'detailsButtonCard';
+
+		detailsButton.onclick = () => {
+			console.log("Details button clicked for song:", song.title); // TODO
+			window.location.href = `/details.html?pid=${song.pid}&sid=${song.id}`;
+		};
+
+		card.appendChild(detailsButton);
+
+		return card;
+	}
+	
 }

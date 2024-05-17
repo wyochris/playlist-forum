@@ -19,7 +19,8 @@
     <nav class="navbar navbar-dark fixed-top">
       <div class="container-fluid">
         <div class="dropdown">
-          <button class="btn btn-tertiary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <button class="btn btn-tertiary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
             <i class="material-icons">settings</i>
           </button>
           <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-left">
@@ -35,8 +36,42 @@
   </header>
 
   <div id="detailsPage" class="container page-container ">
-
+    <div class="song-card">
+      <div class="nav-button" id="prev-song"><i class="bi bi-chevron-left"></i></div>
+      <div class="song-header">
+        <img src="" alt="Album Art" class="album-art">
+        <div class="song-info">
+          <h1 class="song-title">Song Title</h1>
+          <h2 class="song-artist">Artist Name</h2>
+          <div class="song-position" id="song-position">Song 1 of 10</div>
+        </div>
+      </div>
+      <div class="nav-button" id="next-song"><i class="bi bi-chevron-right"></i></div>
+      <div class="song-stats">
+        <div class="stat">
+          <span class="stat-label">Album Title:</span>
+          <span class="stat-value" id="album-title">N/A</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Release Date:</span>
+          <span class="stat-value" id="release-date">N/A</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Popularity:</span>
+          <span class="stat-value" id="popularity">N/A</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Added On:</span>
+          <span class="stat-value" id="added-on">N/A</span>
+        </div>
+      </div>
+      <audio controls id="audio-preview">
+        <source src="" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+    </div>
   </div>
+
 
   <nav class="bottom-navbar navbar navbar-dark fixed-bottom">
     <div class="container-fluid">

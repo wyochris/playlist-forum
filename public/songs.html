@@ -20,7 +20,8 @@
       <nav class="navbar navbar-dark fixed-top">
         <div class="container-fluid">
           <div class="dropdown">
-            <button class="btn btn-tertiary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <button class="btn btn-tertiary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
               <i class="material-icons">settings</i>
             </button>
             <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-left">
@@ -33,41 +34,35 @@
         </div>
       </nav>
     </header>
-    
+
     <main class="bmd-layout-content">
       <div id="songsPage" class="container page-container">
         <h1 class="text-center text-light">Playlist 1</h1>
         <div class="row">
-          <button class="btn btn-primary mx-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#CommentSection">Comments</button>
+          <button class="btn btn-primary mx-auto" type="button" data-bs-toggle="offcanvas"
+            data-bs-target="#CommentSection">Comments</button>
         </div>
-        <div id="playlists" class="container page-container">
+        <div id="songs" class="container page-container">
           <div class="card">
             <div class="card-body">
-              <image src="https://i.scdn.co/image/ab67616d0000485102d63d77b84d4927a80d5252">&nbsp; Song Title</image>
+              Loading songs...
             </div>
           </div>
-          <div class="card">
-            <div class="card-body">
-              <image src="https://i.scdn.co/image/ab67616d0000485102d63d77b84d4927a80d5252">&nbsp; Song Title</image>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-body">
-              <image src="https://i.scdn.co/image/ab67616d0000485102d63d77b84d4927a80d5252">&nbsp; Song Title</image>
-            </div>
-          </div>
-        </div>        
-      </div>      
+        </div>
+
+      </div>
     </main>
-    
-    
-    
+
+
+
     <div class="offcanvas offcanvas-bottom" tabindex="-1" id="CommentSection" aria-labelledby="offcanvasBottomLabel">
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasBottomLabel">Comment Section</h5>
         <form class="d-flex mx-auto my-auto" style="margin: 9px;" onsubmit="preventDefault()">
-          <input id="commentContent" class="form-control me-2" type="search" style="border-top-width: 4px; width: 500px">
-          <button id="addCommentButton" class="btn btn-outline-success" type="button" style="margin: 0px;">Add Comment</button>
+          <input id="commentContent" class="form-control me-2" type="search"
+            style="border-top-width: 4px; width: 500px">
+          <button id="addCommentButton" class="btn btn-outline-success" type="button" style="margin: 0px;">Add
+            Comment</button>
         </form>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
@@ -77,19 +72,19 @@
         <div class="card">
           <div class="card-body">
             <image class="profile-picture" src="https://yt3.ggpht.com/a/default-user=s88-c-k-c0x00ffffff-no-rj"></image>
-            
+
             <h5 id="author">Anonymous user | 10 hours ago</h5>
-            <h4 id="content">Really like the song</h4 >
-              
+            <h4 id="content">Really like the song</h4>
+
           </div>
         </div>
       </div>
 
 
     </div>
-          
+
   </div>
-        
+
   <nav class="bottom-navbar navbar navbar-dark fixed-bottom">
     <div class="container-fluid">
       <div class="row">
@@ -108,44 +103,44 @@
       </div>
     </div>
   </nav>
-        
-        <div class="modal fade" id="addSong" tabindex="-1" role="dialog">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add a Song</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                
-                <div class="form-group bmd-form-group">
-                  <label for="songName">Name</label>
-                  <input type="text" class="form-control" id="songName" required="">
-                  <div class="form-text">* required</div>
-                </div>
-                
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button id="addSong" type="button" class="btn btn-primary" data-dismiss="modal">Add Song</button>
-              </div>
-            </div>
-          </div>
+
+  <div class="modal fade" id="addSong" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add a Song</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-        
-        <script src="scripts/jquery.min.js"></script>
-        <script src="scripts/popper.js"></script>
-        <script src="scripts/bootstrap-material-design.js"></script>
-        <script>$("body").bootstrapMaterialDesign();</script>
-        <script src="/__/firebase/7.18.0/firebase-app.js"></script>
-        <script src="/__/firebase/7.18.0/firebase-analytics.js"></script>
-        <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
-        <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
-        <script src="scripts/rosefire.min.js"></script>
-        <script src="/__/firebase/init.js"></script>
-        <script src="scripts/main.js"></script>
-      </body>
-      
-      </html>
+        <div class="modal-body">
+
+          <div class="form-group bmd-form-group">
+            <label for="songName">Name</label>
+            <input type="text" class="form-control" id="songName" required="">
+            <div class="form-text">* required</div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button id="addSong" type="button" class="btn btn-primary" data-dismiss="modal">Add Song</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/popper.js"></script>
+  <script src="scripts/bootstrap-material-design.js"></script>
+  <script>$("body").bootstrapMaterialDesign();</script>
+  <script src="/__/firebase/7.18.0/firebase-app.js"></script>
+  <script src="/__/firebase/7.18.0/firebase-analytics.js"></script>
+  <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
+  <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
+  <script src="scripts/rosefire.min.js"></script>
+  <script src="/__/firebase/init.js"></script>
+  <script src="scripts/main.js"></script>
+</body>
+
+</html>

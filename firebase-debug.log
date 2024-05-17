@@ -1,0 +1,33 @@
+[debug] [2024-05-16T23:26:38.376Z] ----------------------------------------------------------------------
+[debug] [2024-05-16T23:26:38.379Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\lardnece\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js serve
+[debug] [2024-05-16T23:26:38.379Z] CLI Version:   13.8.1
+[debug] [2024-05-16T23:26:38.379Z] Platform:      win32
+[debug] [2024-05-16T23:26:38.379Z] Node Version:  v20.9.0
+[debug] [2024-05-16T23:26:38.379Z] Time:          Thu May 16 2024 19:26:38 GMT-0400 (Eastern Daylight Time)
+[debug] [2024-05-16T23:26:38.379Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-05-16T23:26:38.503Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-05-16T23:26:38.503Z] > authorizing via signed-in user (chrislardnercl@gmail.com)
+[debug] [2024-05-16T23:26:38.503Z] [iam] checking project lardner-zhang-final-csse280 for permissions ["firebase.projects.get"]
+[debug] [2024-05-16T23:26:38.504Z] > refreshing access token with scopes: []
+[debug] [2024-05-16T23:26:38.506Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2024-05-16T23:26:38.506Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-05-16T23:26:38.612Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2024-05-16T23:26:38.613Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-05-16T23:26:38.626Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/lardner-zhang-final-csse280:testIamPermissions [none]
+[debug] [2024-05-16T23:26:38.627Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/lardner-zhang-final-csse280:testIamPermissions x-goog-quota-user=projects/lardner-zhang-final-csse280
+[debug] [2024-05-16T23:26:38.627Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/lardner-zhang-final-csse280:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2024-05-16T23:26:38.746Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/lardner-zhang-final-csse280:testIamPermissions 200
+[debug] [2024-05-16T23:26:38.746Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/lardner-zhang-final-csse280:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2024-05-16T23:26:38.747Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/lardner-zhang-final-csse280 [none]
+[debug] [2024-05-16T23:26:38.896Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/lardner-zhang-final-csse280 200
+[debug] [2024-05-16T23:26:38.897Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/lardner-zhang-final-csse280 {"projectId":"lardner-zhang-final-csse280","projectNumber":"308052716821","displayName":"Lardner-Zhang-Final-CSSE280","name":"projects/lardner-zhang-final-csse280","resources":{"hostingSite":"lardner-zhang-final-csse280"},"state":"ACTIVE","etag":"1_6f2e8a8c-0fd3-4a02-82f6-ac2d55107516"}
+[info] 
+[info] === Serving from 'C:\Users\lardnece\CSSE280Project\csse-280-spring-2023-2024-final-project-repo-t4-lardner-zhang'...
+[info] 
+[debug] [2024-05-16T23:26:38.915Z] defaultcredentials: writing to file C:\Users\lardnece\AppData\Roaming\firebase\chrislardnercl_gmail_com_application_default_credentials.json
+[debug] [2024-05-16T23:26:38.917Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/lardner-zhang-final-csse280/sites 
+[debug] [2024-05-16T23:26:38.923Z] Setting GAC to C:\Users\lardnece\AppData\Roaming\firebase\chrislardnercl_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to C:\\Users\\lardnece\\AppData\\Roaming\\firebase\\chrislardnercl_gmail_com_application_default_credentials.json"}}
+[debug] [2024-05-16T23:26:38.925Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/lardner-zhang-final-csse280/adminSdkConfig [none]
+[debug] [2024-05-16T23:26:39.011Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/lardner-zhang-final-csse280/adminSdkConfig 200
+[debug] [2024-05-16T23:26:39.012Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/lardner-zhang-final-csse280/adminSdkConfig {"projectId":"lardner-zhang-final-csse280","storageBucket":"lardner-zhang-final-csse280.appspot.com"}
