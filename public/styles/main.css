@@ -26,6 +26,10 @@ body, html {
   min-height: 7.5%;
 }
 
+.dropdown-menu {
+  z-index: 9999;
+}
+
 .bottom-navbar .container-fluid {
   padding-right: 4em; 
   padding-left: 4em;  
