@@ -28,6 +28,7 @@ body, html {
 
 .dropdown-menu {
   z-index: 9999;
+  position: absolute;
 }
 
 .bottom-navbar .container-fluid {
@@ -200,6 +201,8 @@ button {
   display: flex;
   justify-content: space-between;  
   box-sizing: border-box;
+  z-index: 1; 
+  position: static;
 }
 
 .card-body {
