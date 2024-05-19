@@ -52,14 +52,12 @@ AuthManager = class {
 	constructor() {
 		this._user = null;
 	}
-	
 	beginListening(changeListener) {
 		firebase.auth().onAuthStateChanged((user) => {
 			this._user = user;
 			changeListener();
 		});
 	}
-	
 	signIn() {
 		Rosefire.signIn("91f2b267-d3e6-4c22-bc2d-6413401314f6", (err, rfUser) => {
 			if (err) {
@@ -67,22 +65,31 @@ AuthManager = class {
 				return;
 			}
 			console.log("Rosefire success!", rfUser);
-			
-			firebase.auth().signInWithCustomToken(rfUser.token);
-		});		
+
+			// Next use the Rosefire token with Firebase auth.
+			firebase.auth().signInWithCustomToken(rfUser.token).catch((error) => {
+				if (error.code === 'auth/invalid-custom-token') {
+					console.log("The token you provided is not valid.");
+				} else {
+					console.log("signInWithCustomToken error", error.message);
+				}
+			});
+		});
+
+
+	}
+	signOut() {
+		firebase.auth().signOut();
+		window.location.href = `/home.html`;
+
+	}
+	get uid() {
+		return this._user.uid;
+	}
+	get isSignedIn() {
+		return !!this._user;
 	}
 
-	anonSignIn() {
-		firebase.auth().signInAnonymously();
-	}
-
-	signOut() { 
-		firebase.auth().signOut(); 
-		firebase.auth().signInAnonymously();
-	}
-	get uid() { return this._user.uid; }
-	get isSignedIn() { return !!this._user; }
-	get user() { return this._user; }
 	get username() {
 		if(this._user.isAnonymous){
 			return "Anonymous";
@@ -100,7 +107,6 @@ rhit.PlaylistPageController = class {
 		
 		document.querySelector("#logOutButton").onclick = (event) => {
 			rhit.authManager.signOut();
-			window.location.reload();
 		};
 		
 		document.querySelector("#logInButton").onclick = (event) => {
@@ -148,7 +154,7 @@ rhit.PlaylistPageController = class {
 		
 		oldList.parentElement.appendChild(newList);
 		
-		if(!rhit.authManager.user.isAnonymous){
+		if(rhit.authManager.isSignedIn){
 			document.querySelector("#logOutButton").style.display = "block";
 			document.querySelector("#logInButton").style.display = "none";
 		}
@@ -223,22 +229,35 @@ rhit.initializePage = function () {
 		
 		new rhit.DetailsPageManager(pid, sid);
 	}
+
+	if (document.querySelector("#loginPage")) {
+		console.log("On the login page");
+		new rhit.HomePageManager();
+	}
 };
 
 
 rhit.main = function () {
 	console.log("Ready");
 	rhit.authManager = new AuthManager();
-	rhit.authManager.anonSignIn();
 	rhit.authManager.beginListening(() => {
-		console.log(`The auth state has changed.   isSignedIn = ${rhit.authManager.isSignedIn}`);
-		//rhit.checkForRedirects();
+		console.log(`The auth state has changed. Is signed in: ${rhit.authManager.isSignedIn}`);
+		rhit.checkForRedirects();
 		rhit.initializePage();
 	});
-	
-	
 };
+
 rhit.main();
+
+rhit.checkForRedirects = function () {
+	// Redirects
+	if (document.querySelector("#loginPage") && rhit.authManager.isSignedIn) {
+		window.location.href = "/index.html";
+	}
+	if (!document.querySelector("#loginPage") && !rhit.authManager.isSignedIn) {
+		window.location.href = "/home.html";
+	}
+}
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -277,11 +296,20 @@ ResultPageManager = class {
 			console.log("Form submitted")
 			this.handleSearch();
 		};
+		document.querySelector("#logOutButton").style.display = "block";
+
+		document.querySelector("#logOutButton").onclick = (event) => {
+			rhit.authManager.signOut();
+		};
+
 	}
+
 	
 	handleSearch() {
 		const searchQuery = document.getElementById('searchInput').value;
 		console.log('handle search start');
+		showNotification("searching...", 1000);
+
 		this.updateSongCards(searchQuery);
 		document.getElementById('searchInput').value = '';
 	}
@@ -425,6 +453,8 @@ ResultPageManager = class {
 				playlistRef.collection('songs').doc(track.id).set(songData)
 				.then(() => {
 					console.log('Song added to playlist successfully!');
+					showNotification("added song to playlist");
+
 				})
 				.catch(error => {
 					console.error('Error adding song to playlist:', error);
@@ -434,6 +464,8 @@ ResultPageManager = class {
 			}
 		});
 	}
+
+	
 	
 }
 
@@ -445,6 +477,11 @@ rhit.DetailsPageManager = class {
 		this.songs = []; // use init songs function
 		this.currentIndex = 0;
 		this.initializeSongs();
+		document.querySelector("#logOutButton").style.display = "block";
+
+		document.querySelector("#logOutButton").onclick = (event) => {
+			rhit.authManager.signOut();
+		};
 	}
 	
 	async initializeSongs() {
@@ -572,6 +609,8 @@ rhit.SongPageManagerSong = class {
 			[rhit.FB_KEY_CONTENT]: content,
 			[rhit.FB_KEY_LAST_TOUCHED]: firebase.firestore.Timestamp.now(),
 		})
+
+		showNotification("added a comment");
 	}
 	
 	beginListeningComment(changeListener) {
@@ -676,15 +715,18 @@ rhit.SongPageControllerSong = class {
 			const content = document.querySelector("#commentContent").value;
 			console.log(content);
 			rhit.songPageManagerSong.addComment(content);
+			const comment = document.querySelector("#commentContent");
+			comment.value = "";
 		};
 		
 		// document.querySelector("#logOutButton").onclick = (event) => {
 		// 	rhit.authManager.signOut();
 		// 	window.location.reload();
 		// };
-		
-		document.querySelector("#logInButton").onclick = (event) => {
-			rhit.authManager.signIn();
+		document.querySelector("#logOutButton").style.display = "block";
+
+		document.querySelector("#logOutButton").onclick = (event) => {
+			rhit.authManager.signOut();
 		};
 		
 		
@@ -715,10 +757,10 @@ rhit.SongPageControllerSong = class {
 			// console.log("made a comment");
 		}
 		
-		if(!rhit.authManager.user.isAnonymous){
-			document.querySelector("#logOutButton").style.display = "block";
-			document.querySelector("#logInButton").style.display = "none";
-		}
+		// if(!rhit.authManager.user.isAnonymous){
+		// 	document.querySelector("#logOutButton").style.display = "block";
+		// 	document.querySelector("#logInButton").style.display = "none";
+		// }
 	}
 	
 	_createSongCard(song) {
@@ -791,3 +833,21 @@ rhit.SongPageControllerSong = class {
 	
 }
 
+rhit.HomePageManager = class {
+	constructor() {
+		document.querySelector("#rosefireButton").onclick = (event) => {
+			rhit.authManager.signIn();
+		};
+	}
+}
+
+
+function showNotification(message, time=3000) {
+    var notification = document.getElementById('notification');
+    notification.textContent = message;
+    notification.style.display = 'block';
+
+    setTimeout(function() {
+        notification.style.display = 'none';
+    }, time);
+}
