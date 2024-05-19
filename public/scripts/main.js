@@ -6,7 +6,6 @@ rhit.FB_COLLECTION_PLAYLIST = "Playlists";
 rhit.FB_COLLECTION_COMMENTS = "Comments";
 FB_COLLECTION_SONG = "songs";
 rhit.FB_KEY_PLAYLISTNAME = "playlistName";
-rhit.FB_KEY_AUTHOR = "author";
 rhit.FB_KEY_COMMENTER = "Commenter";
 rhit.FB_KEY_CONTENT = "Content";
 rhit.FB_KEY_LAST_TOUCHED = "Modified";
@@ -17,7 +16,7 @@ rhit.songPageManagerSong = null;
 
 FB_COLLECTION_PLAYLIST = "Playlists";
 FB_KEY_PLAYLISTNAME = "playlistName";
-FB_KEY_AUTHOR = "author";
+rhit.FB_KEY_AUTHOR = "author";
 
 function htmlToElement(html) {
 	var template = document.createElement('template');
@@ -162,12 +161,12 @@ rhit.PlaylistPageController = class {
 }
 
 rhit.PlaylistManager = class {
-	constructor(uid) {
-		this._uid = uid;
-		this._documentSnapshots = [];
-		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_PLAYLIST);
-		this._unsubscribe = null;
-	}
+    constructor(uid) {
+        this._uid = uid;
+        this._documentSnapshots = [];
+        this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_PLAYLIST);
+        this._unsubscribe = null;
+    }
 	
 	add(playlistName) {
 		this._ref.add({
@@ -176,19 +175,17 @@ rhit.PlaylistManager = class {
 		})
 	}
 	
-	beginListening(changeListener) {
-		let query = this._ref
-		.limit(50);
-		
-		if (this._uid) {
-			query = query.where(FB_KEY_AUTHOR, "==", this._uid);
-		}
-		
-		this._unsubscribe = query.onSnapshot((querySnapshot) => {
-			this._documentSnapshots = querySnapshot.docs;
-			changeListener();
-		});
-	}
+    beginListening(changeListener) {
+		console.log("Author Key:", rhit.FB_KEY_AUTHOR);
+		console.log("User ID:", this._uid);
+
+        let query = this._ref.where(rhit.FB_KEY_AUTHOR, "==", this._uid).limit(50);
+
+        this._unsubscribe = query.onSnapshot((querySnapshot) => {
+            this._documentSnapshots = querySnapshot.docs;
+            changeListener();
+        });
+    }
 	
 	stopListening() {
 		this._unsubscribe();
@@ -212,10 +209,16 @@ rhit.PlaylistManager = class {
 rhit.initializePage = function () {
 	const urlParams = new URLSearchParams(window.location.search);
 	if (document.querySelector("#mainPage")) {
-		const uid = urlParams.get("uid");
-		rhit.playlistManager = new rhit.PlaylistManager(uid);
-		new rhit.PlaylistPageController();
-	}
+        rhit.authManager.beginListening(() => {
+            if (rhit.authManager.isSignedIn) {
+                rhit.playlistManager = new rhit.PlaylistManager(rhit.authManager.uid);
+                new rhit.PlaylistPageController();
+            } else {
+                console.log("User is not signed in.");
+            }
+        });
+    }
+	
 	if (document.querySelector("#songsPage")) {
 		const pid = urlParams.get("pid");
 		rhit.songPageManagerSong = new rhit.SongPageManagerSong(pid);
@@ -406,16 +409,19 @@ ResultPageManager = class {
 		return card;
 	}
 	
+	// firebase things
 	populateDropdown(menu, track) {
 		const db = firebase.firestore();
-		db.collection('Playlists').get().then(querySnapshot => {
+		const userUID = rhit.authManager.uid;  // hopefully?
+	
+		db.collection('Playlists').where(rhit.FB_KEY_AUTHOR, "==", userUID).get().then(querySnapshot => {
 			querySnapshot.forEach(doc => {
-				const playlistName = doc.data().playlistName; //playlistName field
+				const playlistName = doc.data().playlistName;  
 				const option = document.createElement('a');
 				option.className = 'dropdown-item';
 				option.href = '#';
 				option.textContent = playlistName;
-				option.onclick = () => this.addSongToPlaylist(track, doc.id); // Use the doc ID 
+				option.onclick = () => this.addSongToPlaylist(track, doc.id);  // Use the document ID
 				menu.appendChild(option);
 			});
 		}).catch(error => {
