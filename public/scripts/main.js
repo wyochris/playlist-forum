@@ -179,7 +179,7 @@ rhit.PlaylistManager = class {
 		console.log("Author Key:", rhit.FB_KEY_AUTHOR);
 		console.log("User ID:", this._uid);
 
-        let query = this._ref.where(rhit.FB_KEY_AUTHOR, "==", this._uid).limit(50);
+        let query = this._ref.limit(50);
 
         this._unsubscribe = query.onSnapshot((querySnapshot) => {
             this._documentSnapshots = querySnapshot.docs;
