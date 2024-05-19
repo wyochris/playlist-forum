@@ -422,6 +422,7 @@ rhit.DetailsPageManager = class {
 		this.songs = []; // use init songs function
         this.currentIndex = 0;
         this.initializeSongs();
+		this.attachDeleteButtonListener();
     }
 
 	async initializeSongs() {
@@ -488,6 +489,33 @@ rhit.DetailsPageManager = class {
 		audio.querySelector('source').src = songData.previewUrl;
 		audio.load(); // Refresh
     }
+
+	attachDeleteButtonListener() {
+        const deleteButton = document.getElementById('delete-song');
+        deleteButton.onclick = () => this.deleteSong();
+    }
+
+    async deleteSong() {
+        if (confirm("Are you sure you want to delete this song?")) {
+            try {
+                await this.db.collection('Playlists').doc(this.playlistID)
+                    .collection('songs').doc(this.songs[this.currentIndex]).delete();
+                
+                console.log('Song deleted successfully');
+                this.songs.splice(this.currentIndex, 1); // Remove the song
+                if (this.songs.length > 0) {
+                    this.currentIndex = Math.max(this.currentIndex - 1, 0);
+                    this.loadSong(this.songs[this.currentIndex]);
+                } else {
+                    console.log('No songs left in the playlist');
+                    // Handle empty playlist
+                }
+                this.updateNavigationButtons();
+            } catch (error) {
+                console.error('Error deleting song: ', error);
+            }
+        }
+    }
 }
 
 rhit.SongPageManagerSong = class {
@@ -497,6 +525,7 @@ rhit.SongPageManagerSong = class {
 		this._commentSnapshots = [];
         this._songRef = firebase.firestore().collection("Playlists").doc(pid).collection("songs");
 		this._commRef = firebase.firestore().collection("Playlists").doc(pid).collection("Comments");
+		this._playlistNameRef = firebase.firestore().collection('Playlists');
         this._unsubscribe = null;
 		this._unsubscribeComment = null;
     }
@@ -552,10 +581,6 @@ rhit.SongPageManagerSong = class {
         this._unsubscribe();
     }
 
-	getPlaylistTitle() {
-		return "playlist 2";
-	}
-
     get length() {
         return this._documentSnapshots.length;
     }
@@ -582,6 +607,23 @@ rhit.SongPageManagerSong = class {
 			pid: this._pid  // Maintain this when initializing the manager
 		};
 	}
+
+	async fetchPlaylistName() {
+		try {
+			const playlistDoc = await this._playlistNameRef.doc(this._pid).get();
+			if (playlistDoc.exists) {
+				console.log("Playlist Name:", playlistDoc.data().playlistName);
+				return playlistDoc.data().playlistName;
+			} else {
+				console.log("Playlist document not found!");
+				return "Unknown Playlist";  // Fallback playlist name
+			}
+		} catch (error) {
+			console.error("Error getting playlist name:", error);
+			return "Error Loading Playlist";
+		}
+	}
+	
 }
 
 
@@ -599,7 +641,7 @@ rhit.SongPageControllerSong = class {
 		rhit.songPageManagerSong.beginListeningComment(this.updateView.bind(this));
     }
 
-    updateView() {
+    async updateView() {
 		console.log("updating view");
         const songContainer = document.querySelector("#songs");
         songContainer.innerHTML = ''; // Clear existing content
@@ -608,9 +650,7 @@ rhit.SongPageControllerSong = class {
             const song = rhit.songPageManagerSong.getSong(i);
             const songCard = this._createSongCard(song);
             songContainer.appendChild(songCard);
-        }
-
-		document.querySelector("#playlistTitle").innerText = rhit.songPageManagerSong.getPlaylistTitle();
+        }		
 
 		const commentContainer = document.querySelector("#commentContainer");
         commentContainer.innerHTML = ''; 
@@ -621,7 +661,6 @@ rhit.SongPageControllerSong = class {
             commentContainer.appendChild(cmCard);
 			console.log("made a comment");
         }
-
     }
 
 	_createSongCard(song) {
