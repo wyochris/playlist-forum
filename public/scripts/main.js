@@ -460,7 +460,7 @@ rhit.DetailsPageManager = class {
 		const songDoc = await this.db.collection('Playlists').doc(this.playlistID)
 		.collection('songs').doc(songID).get();
 		if (songDoc.exists) {
-			this.displaySongDetails(songDoc.data());
+			await this.displaySongDetails(songDoc.data());
 			this.currentSongID = songID; //current song ID
 			this.updateNavigationButtons();
 		} else {
@@ -496,7 +496,7 @@ rhit.DetailsPageManager = class {
 		document.getElementById('song-position').textContent = `Song ${this.currentIndex + 1} of ${this.songs.length}`;
 	}
 	
-	displaySongDetails(songData) {
+	async displaySongDetails(songData) {
 		document.querySelector('.album-art').src = songData.albumImageUrl;
 		document.querySelector('.album-art').alt = `${songData.title} album cover`;
 		document.querySelector('.song-title').textContent = songData.title;
@@ -510,6 +510,31 @@ rhit.DetailsPageManager = class {
 		const audio = document.getElementById('audio-preview');
 		audio.querySelector('source').src = songData.previewUrl;
 		audio.load(); // Refresh
+
+		const deleteButton = document.querySelector('#delete-song');
+		deleteButton.onclick = async () => await this.deleteSong();
+	}
+
+	async deleteSong() {
+		if (confirm("Are you sure you want to delete this song?")) {
+			try {
+				await this.db.collection('Playlists').doc(this.playlistID)
+					.collection('songs').doc(this.songs[this.currentIndex]).delete();
+				
+				console.log('Song deleted successfully');
+				this.songs.splice(this.currentIndex, 1); // Remove the song from the array
+				if (this.songs.length > 0) {
+					this.currentIndex = Math.max(this.currentIndex - 1, 0);
+					this.loadSong(this.songs[this.currentIndex]);
+				} else {
+					console.log('No songs left in the playlist');
+					// TODO
+				}
+				this.updateNavigationButtons();
+			} catch (error) {
+				console.error('Error deleting song: ', error);
+			}
+		}
 	}
 }
 
@@ -580,9 +605,20 @@ rhit.SongPageManagerSong = class {
 		this._unsubscribe();
 	}
 	
-	async getPlaylistTitle() {
-		await firebase.firestore().collection('Playlists').doc(this._pid).get().playlistName;
-	}
+    async getPlaylistTitle() {
+        try {
+            const docSnapshot = await firebase.firestore().collection('Playlists').doc(this._pid).get();
+            if (docSnapshot.exists) {
+                return docSnapshot.data().playlistName;
+            } else {
+                console.error('No such playlist!');
+                return 'Playlist Title Error'; // dsfdsf
+            }
+        } catch (error) {
+            console.error('Error getting playlist:', error);
+            return 'Playlist Title Error'; // dsfsdf
+        }
+    }
 	
 	get length() {
 		return this._documentSnapshots.length;
@@ -597,7 +633,7 @@ rhit.SongPageManagerSong = class {
 			date,	
 			snap.get(rhit.FB_KEY_CONTENT),				
 		);
-		console.log(cm.time);
+		// console.log(cm.time);
 		return cm;
 	}
 	
@@ -642,10 +678,10 @@ rhit.SongPageControllerSong = class {
 			rhit.songPageManagerSong.addComment(content);
 		};
 		
-		document.querySelector("#logOutButton").onclick = (event) => {
-			rhit.authManager.signOut();
-			window.location.reload();
-		};
+		// document.querySelector("#logOutButton").onclick = (event) => {
+		// 	rhit.authManager.signOut();
+		// 	window.location.reload();
+		// };
 		
 		document.querySelector("#logInButton").onclick = (event) => {
 			rhit.authManager.signIn();
@@ -656,7 +692,7 @@ rhit.SongPageControllerSong = class {
 		rhit.songPageManagerSong.beginListeningComment(this.updateView.bind(this));
 	}
 	
-	updateView() {
+	async updateView() {
 		console.log("updating view");
 		const songContainer = document.querySelector("#songs");
 		songContainer.innerHTML = ''; // Clear existing content
@@ -667,7 +703,7 @@ rhit.SongPageControllerSong = class {
 			songContainer.appendChild(songCard);
 		}
 		
-		document.querySelector("#playlistTitle").innerText = rhit.songPageManagerSong.getPlaylistTitle();
+		document.querySelector("#playlistTitle").innerText = await rhit.songPageManagerSong.getPlaylistTitle();
 		
 		const commentContainer = document.querySelector("#commentContainer");
 		commentContainer.innerHTML = ''; 
@@ -676,7 +712,7 @@ rhit.SongPageControllerSong = class {
 			const comment = rhit.songPageManagerSong.getComment(i);
 			const cmCard = this._createComment(comment);
 			commentContainer.appendChild(cmCard);
-			console.log("made a comment");
+			// console.log("made a comment");
 		}
 		
 		if(!rhit.authManager.user.isAnonymous){
@@ -735,15 +771,21 @@ rhit.SongPageControllerSong = class {
 	}
 	
 	_createComment(cm) {
-		console.log("creating" + cm.content);
+		// console.log("creating" + cm.content);
+		let displayName = 'Unknown User'; // Default name in case the fetch fails
+		if(cm.user.length > 15){
+			displayName = 'Anonymous';
+		}
+		else {
+			displayName = cm.user;
+		}
+
 		return htmlToElement(`<div class="card">
 		<div class="card-body">
 		<image class="profile-picture" src="https://yt3.ggpht.com/a/default-user=s88-c-k-c0x00ffffff-no-rj"></image>
 		
-		<h5 id="author">${cm.user} | ${cm.time}</h5>
-		<h4 id="content">${cm.content}</h4 >
-		
-		</div>
+		<div id="author">${displayName} | ${ cm.time.toLocaleDateString() + ' ' + cm.time.toLocaleTimeString()} <br> <br> ${cm.content} </div>
+
 		</div>`);
 	}
 	

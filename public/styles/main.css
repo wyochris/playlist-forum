@@ -31,6 +31,10 @@ body, html {
   position: absolute;
 }
 
+#author {
+  padding-left: 20px; 
+}
+
 .bottom-navbar .container-fluid {
   padding-right: 4em; 
   padding-left: 4em;  
@@ -201,7 +205,6 @@ button {
   display: flex;
   justify-content: space-between;  
   box-sizing: border-box;
-  z-index: 1; 
   position: static;
 }
 
@@ -290,7 +293,12 @@ body, html {
   width: 50%; 
   min-width: 600px; 
   text-align: center;
-  padding: 10px 0;
+  /* padding: 10px 0; */
+}
+
+#delete-song {
+  margin-top: 5px;
+  cursor: pointer;
 }
 
 .stat-value {
