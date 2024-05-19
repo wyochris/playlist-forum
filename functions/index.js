@@ -54,16 +54,15 @@ function authenticateWithSpotify() {
               spotifyApi.setAccessToken(data.body['access_token']);
               
               setTokenExpiration(data.body['expires_in']);
-              resolve(data.body['access_token']);  // Resolve with the token
+              resolve(data.body['access_token']);  // Resolve
           },
           err => {
-              console.error('Something went wrong when retrieving an access token', err);
-              reject(err);  // Reject the promise on error
+              console.error('Error: Could not retrieve access token', err);
+              reject(err);  // Reject
           }
       );
   });
 }
-
 
 authenticateWithSpotify();
 
@@ -116,3 +115,5 @@ app.get('/search/:query', async (req, res) => {
 console.log("backend ready");
 
 exports.api = functions.https.onRequest(app);
+
+
