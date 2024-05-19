@@ -335,3 +335,12 @@ audio {
 #next-song {
   right: 20px;
 }
+
+#logOutButton {
+  display: none;
+}
+
+#playlistPage {
+  height: 630px;
+  overflow-y: scroll;
+}

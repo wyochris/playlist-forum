@@ -28,27 +28,14 @@
             <li data-toggle="modal" data-target="#addPlaylist"><a class="dropdown-item" href="#">Create Playlist</a></li>
             <li><a class="dropdown-item" href="#">User Settings</a></li>
             <br>
-            <li id="logOutButton"><a class="dropdown-item" href="#">Login</a></li>
+            <li id="logInButton"><a class="dropdown-item" href="#">Login</a></li>
+            <li id="logOutButton"><a class="dropdown-item" href="#">Logout</a></li>
           </ul>
         </div>
 
       </div>
     </nav>
   </header>
-  
-  <nav class="bottom-navbar navbar navbar-dark fixed-bottom">
-    <div class="container-fluid">
-      <div class="row">
-        <div id="playlistsButton" class="col-3" style="background-color: black">
-          <i class="bi bi-house"></i>
-        </div>
-
-        <div id="resultsButton" class="col-3" style="background-color: gray;">
-          <i class="bi bi-search"></i>
-        </div>
-      </div>
-    </div>
-  </nav>
   
   <div id="mainPage" class="container page-container">
     <h1 class="text-center text-dark">My Playlists</h1>
@@ -64,7 +51,21 @@
 
       </div>
       
+      <nav class="bottom-navbar navbar navbar-dark fixed-bottom">
+        <div class="container-fluid">
+          <div class="row">
+            <div id="playlistsButton" class="col-3" style="background-color: black">
+              <i class="bi bi-house"></i>
+            </div>
+    
+            <div id="resultsButton" class="col-3" style="background-color: gray;">
+              <i class="bi bi-search"></i>
+            </div>
+          </div>
+        </div>
+      </nav>
     </div>
+    
   </div>
   
   <div class="modal fade" id="addPlaylist" tabindex="-1" role="dialog">
