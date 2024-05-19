@@ -87,7 +87,7 @@ AuthManager = class {
 		if(this._user.isAnonymous){
 			return "Anonymous";
 		} else {
-			return this._user.username;
+			return this._user.uid;
 		}		
 	}
 }
@@ -538,6 +538,10 @@ rhit.SongPageManagerSong = class {
 	
 	addComment(content) {
 		console.log("adding " + content);
+
+		//const date=new Date(firebase.firestore.Timestamp.now());
+		//const sfd = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+
 		this._commRef.add({
 			[rhit.FB_KEY_COMMENTER]: rhit.authManager.username,
 			[rhit.FB_KEY_CONTENT]: content,
@@ -586,11 +590,14 @@ rhit.SongPageManagerSong = class {
 	
 	getComment(index) {
 		const snap = this._commentSnapshots[index];
+		const date = snap.get(rhit.FB_KEY_LAST_TOUCHED).toDate();
+
 		const cm = new Comment(
 			snap.get(rhit.FB_KEY_COMMENTER),
-			snap.get(rhit.FB_KEY_CONTENT),
-			snap.get(rhit.FB_KEY_LAST_TOUCHED),
+			date,	
+			snap.get(rhit.FB_KEY_CONTENT),				
 		);
+		console.log(cm.time);
 		return cm;
 	}
 	
