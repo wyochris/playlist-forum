@@ -40,10 +40,11 @@ Song = class {
 }
 
 Comment = class {
-	constructor(user, time, content) {
-		this.user = user;
-		this.time = time;
-		this.content = content;
+    constructor(id, user, time, content) {
+        this.id = id;
+        this.user = user;
+        this.time = time;
+        this.content = content;
 	}
 }
 
@@ -670,17 +671,17 @@ rhit.SongPageManagerSong = class {
 	}
 	
 	getComment(index) {
-		const snap = this._commentSnapshots[index];
-		const date = snap.get(rhit.FB_KEY_LAST_TOUCHED).toDate();
-
-		const cm = new Comment(
-			snap.get(rhit.FB_KEY_COMMENTER),
-			date,	
-			snap.get(rhit.FB_KEY_CONTENT),				
+		const docSnap = this._commentSnapshots[index];
+		const date = docSnap.get(rhit.FB_KEY_LAST_TOUCHED).toDate();
+	
+		return new Comment(
+			docSnap.id, //Firestore document ID
+			docSnap.get(rhit.FB_KEY_COMMENTER),
+			date,
+			docSnap.get(rhit.FB_KEY_CONTENT)
 		);
-		// console.log(cm.time);
-		return cm;
 	}
+	
 	
 	
 	getSong(index) {
@@ -819,22 +820,42 @@ rhit.SongPageControllerSong = class {
 	}
 	
 	_createComment(cm) {
-		// console.log("creating" + cm.content);
-		let displayName = 'Unknown User'; // Default name in case the fetch fails
-		if(cm.user.length > 15){
-			displayName = 'Anonymous';
-		}
-		else {
-			displayName = cm.user;
-		}
+		let displayName = cm.user.length > 15 ? 'Anonymous' : cm.user;
 
-		return htmlToElement(`<div class="card">
+		// Fallback for date handling
+		const dateString = cm.time instanceof Date ? cm.time.toLocaleDateString() : 'Invalid date';
+		console.log(cm.id);
+		const card = htmlToElement(`<div class="card">
 		<div class="card-body">
-		<image class="profile-picture" src="https://yt3.ggpht.com/a/default-user=s88-c-k-c0x00ffffff-no-rj"></image>
-		
-		<div id="author">${displayName} | ${ cm.time.toLocaleDateString() + ' ' + cm.time.toLocaleTimeString()} <br> <br> ${cm.content} </div>
+			<image class="profile-picture" src="https://yt3.ggpht.com/a/default-user=s88-c-k-c0x00ffffff-no-rj"></image>
+			<div id="commentContent-${cm.id}">${displayName} | ${dateString} <br> ${cm.content}</div>
+			<button class="btn btn-primary edit-comment" data-id="${cm.id}">Edit</button>
+		</div>
+	</div>`);
+	
+		card.querySelector(".edit-comment").onclick = () => {
+			this.showEditForm(cm.id, cm.content);
+		};
+	
+		return card;
+	}
 
-		</div>`);
+	showEditForm(commentId, currentContent) {
+		const commentContentDiv = document.getElementById(`commentContent-${commentId}`);
+		console.log(`Attempting to find element with ID: commentContent-${commentId}`);
+		if (!commentContentDiv) {
+			console.error('Could not find the comment content div');
+			return;
+		}
+		const originalContent = commentContentDiv.innerHTML;
+		console.log(`Found element, current content: ${originalContent}`);
+	
+		commentContentDiv.innerHTML = `
+			<textarea id="input-${commentId}" class="form-control">${currentContent}</textarea>
+			<button class="btn btn-success" onclick="rhit.saveEdit('${commentId}', '${originalContent}')">Save</button>
+			<button class="btn btn-danger" onclick="rhit.cancelEdit('${commentId}', '${originalContent}')">Cancel</button>
+		`;
+		document.getElementById(`input-${commentId}`).focus();
 	}
 	
 }
@@ -857,3 +878,26 @@ function showNotification(message, time=3000) {
         notification.style.display = 'none';
     }, time);
 }
+
+rhit.saveEdit = function(commentId, originalContent) {
+    const newContent = document.getElementById(`input-${commentId}`).value;
+
+    // Firestore update here
+    const commentRef = firebase.firestore().collection("Playlists").doc(rhit.songPageManagerSong._pid)
+                        .collection("Comments").doc(commentId);
+
+    commentRef.update({
+        [rhit.FB_KEY_CONTENT]: newContent,
+        [rhit.FB_KEY_LAST_TOUCHED]: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+        console.log("Comment updated successfully!");
+        document.getElementById(`commentContent-${commentId}`).innerHTML = newContent;
+    }).catch(error => {
+        console.error("Error updating comment: ", error);
+        document.getElementById(`commentContent-${commentId}`).innerHTML = originalContent; // Revert on error
+    });
+};
+
+rhit.cancelEdit = function(commentId, originalContent) {
+    document.getElementById(`commentContent-${commentId}`).innerHTML = originalContent;
+};

@@ -366,3 +366,11 @@ audio {
   border-radius: 5px;
   z-index: 1000; 
 }
+
+.edit-btn, .cancel-btn, .save-btn {
+  display: inline; 
+}
+
+.save-btn, .cancel-btn {
+  display: none;
+}
